@@ -1,6 +1,6 @@
 {
   "parent": "minecraft:item/generated",
   "textures": {
-    "layer0": "kaleidoscope_tavern:item/grape"
+    "layer0": "kaleidoscopetfctavern:item/grape_green"
   }
 }

@@ -2,6 +2,6 @@
   "parent": "minecraft:block/cross",
   "render_type": "minecraft:cutout",
   "textures": {
-    "cross": "kaleidoscope_tavern:block/plant/wild_grapevine"
+    "cross": "kaleidoscopetfctavern:block/plant/wild_grapevine_red"
   }
 }

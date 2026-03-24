@@ -1,6 +1,7 @@
 package net.xdpp.kaleidoscopetfctavern;
 
 import com.mojang.logging.LogUtils;
+import net.minecraft.resources.ResourceLocation;
 import net.xdpp.kaleidoscopetfctavern.init.ModBlocks;
 import net.xdpp.kaleidoscopetfctavern.init.ModItems;
 import net.xdpp.kaleidoscopetfctavern.init.WildGrapevineTypes;
@@ -36,6 +37,10 @@ public class Kaleidoscopetfctavern {
     public static final DeferredRegister<Item> ITEMS = DeferredRegister.create(ForgeRegistries.ITEMS, MODID);
     public static final DeferredRegister<CreativeModeTab> CREATIVE_MODE_TABS = DeferredRegister.create(Registries.CREATIVE_MODE_TAB, MODID);
 
+    public static ResourceLocation modLoc(String path) {
+        return new ResourceLocation(MODID, path);
+    }
+
     public Kaleidoscopetfctavern() {
         var modEventBus = FMLJavaModLoadingContext.get().getModEventBus();
 
@@ -62,6 +67,10 @@ public class Kaleidoscopetfctavern {
                     output.accept(ModItems.GRAPE_RED.get());
                     output.accept(ModItems.GRAPE_WHITE.get());
                     output.accept(ModItems.GRAPE_GREEN.get());
+                    output.accept(ModItems.PURPLE_GRAPE_BUCKET.get());
+                    output.accept(ModItems.RED_GRAPE_BUCKET.get());
+                    output.accept(ModItems.WHITE_GRAPE_BUCKET.get());
+                    output.accept(ModItems.GREEN_GRAPE_BUCKET.get());
                     output.accept(ModItems.GRAPEVINE_LOCATOR.get());
                 })
                 .build());

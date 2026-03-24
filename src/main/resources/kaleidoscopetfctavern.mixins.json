@@ -6,7 +6,9 @@
   "refmap": "kaleidoscopetfctavern.refmap.json",
   "mixins": [
     "TrellisBlockMixin",
-    "GrapevineTrellisBlockMixin"
+    "GrapevineTrellisBlockMixin",
+    "PressingTubBlockMixin",
+    "PressingTubBlockEntityMixin"
   ],
   "client": [
   ],

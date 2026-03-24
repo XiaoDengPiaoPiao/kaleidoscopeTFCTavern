@@ -1,5 +1,6 @@
 package net.xdpp.kaleidoscopetfctavern.init;
 
+import com.github.ysbbbbbb.kaleidoscopetavern.item.JuiceBucketItem;
 import net.xdpp.kaleidoscopetfctavern.Kaleidoscopetfctavern;
 import net.xdpp.kaleidoscopetfctavern.item.GrapevineLocatorItem;
 import net.minecraft.world.item.BlockItem;
@@ -26,20 +27,24 @@ public interface ModItems {
     RegistryObject<Item> WILD_GRAPEVINE_GREEN = ITEMS.register("wild_grapevine_green",
             () -> new BlockItem(ModBlocks.WILD_GRAPEVINE_GREEN.get(), new Item.Properties()));
 
-    // 葡萄物品 - 在这里替换{葡萄Purple}材质
     RegistryObject<Item> GRAPE_PURPLE = ITEMS.register("grape_purple",
             () -> new Item(new Item.Properties()));
-    // 葡萄物品 - 在这里替换{葡萄Red}材质
     RegistryObject<Item> GRAPE_RED = ITEMS.register("grape_red",
             () -> new Item(new Item.Properties()));
-    // 葡萄物品 - 在这里替换{葡萄White}材质
     RegistryObject<Item> GRAPE_WHITE = ITEMS.register("grape_white",
             () -> new Item(new Item.Properties()));
-    // 葡萄物品 - 在这里替换{葡萄Green}材质
     RegistryObject<Item> GRAPE_GREEN = ITEMS.register("grape_green",
             () -> new Item(new Item.Properties()));
 
-    // 调试工具 - 葡萄藤定位器
     RegistryObject<Item> GRAPEVINE_LOCATOR = ITEMS.register("grapevine_locator",
             () -> new GrapevineLocatorItem(new Item.Properties()));
+
+    RegistryObject<Item> PURPLE_GRAPE_BUCKET = ITEMS.register("purple_grape_bucket",
+            () -> new JuiceBucketItem(ModFluids.PURPLE_GRAPE_JUICE));
+    RegistryObject<Item> RED_GRAPE_BUCKET = ITEMS.register("red_grape_bucket",
+            () -> new JuiceBucketItem(ModFluids.RED_GRAPE_JUICE));
+    RegistryObject<Item> WHITE_GRAPE_BUCKET = ITEMS.register("white_grape_bucket",
+            () -> new JuiceBucketItem(ModFluids.WHITE_GRAPE_JUICE));
+    RegistryObject<Item> GREEN_GRAPE_BUCKET = ITEMS.register("green_grape_bucket",
+            () -> new JuiceBucketItem(ModFluids.GREEN_GRAPE_JUICE));
 }

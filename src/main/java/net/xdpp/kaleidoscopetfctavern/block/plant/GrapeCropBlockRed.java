@@ -16,6 +16,7 @@ import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.LevelReader;
 import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.BonemealableBlock;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.StateDefinition;
@@ -28,8 +29,8 @@ import net.minecraftforge.common.ToolActions;
 
 @SuppressWarnings("deprecation")
 public class GrapeCropBlockRed extends Block implements BonemealableBlock {
-    public static final IntegerProperty AGE = BlockStateProperties.AGE_3;
-    public static final int MAX_AGE = BlockStateProperties.MAX_AGE_3;
+    public static final IntegerProperty AGE = BlockStateProperties.AGE_5;
+    public static final int MAX_AGE = BlockStateProperties.MAX_AGE_5;
 
     public GrapeCropBlockRed() {
         super(Properties.of()
@@ -74,18 +75,13 @@ public class GrapeCropBlockRed extends Block implements BonemealableBlock {
     @Override
     public InteractionResult use(BlockState state, Level level, BlockPos pos, Player player,
                                  InteractionHand hand, BlockHitResult hitResult) {
-        ItemStack itemInHand = player.getItemInHand(hand);
-        int age = state.getValue(AGE);
-        boolean maxAge = age == MAX_AGE;
-        if (!maxAge && itemInHand.is(Items.BONE_MEAL)) {
-            return InteractionResult.PASS;
-        }
-
-        if (maxAge) {
-            popResource(level, pos, ModItems.GRAPE_RED.get().getDefaultInstance());
-            level.playSound(null, pos, SoundEvents.CROP_PLANTED, player.getSoundSource(), 1.0F, 1.0F);
-            level.setBlock(pos, state.setValue(AGE, 0), 2);
-            return InteractionResult.sidedSuccess(level.isClientSide);
+        ItemStack heldItem = player.getItemInHand(hand);
+        if (heldItem.canPerformAction(ToolActions.SHEARS_HARVEST) && isMaxAge(state)) {
+            level.setBlockAndUpdate(pos, Blocks.AIR.defaultBlockState());
+            Block.popResource(level, pos, new ItemStack(ModItems.GRAPE_RED.get(), 3));
+            heldItem.hurtAndBreak(1, player, p -> p.broadcastBreakEvent(hand));
+            player.playSound(SoundEvents.BEEHIVE_SHEAR);
+            return InteractionResult.SUCCESS;
         }
         return super.use(state, level, pos, player, hand, hitResult);
     }

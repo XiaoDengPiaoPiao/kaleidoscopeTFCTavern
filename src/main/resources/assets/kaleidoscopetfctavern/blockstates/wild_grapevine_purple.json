@@ -1,7 +1,7 @@
 {
   "variants": {
     "": {
-      "model": "kaleidoscope_tavern:block/plant/wild_grapevine"
+      "model": "kaleidoscopetfctavern:block/plant/wild_grapevine_purple"
     }
   }
 }

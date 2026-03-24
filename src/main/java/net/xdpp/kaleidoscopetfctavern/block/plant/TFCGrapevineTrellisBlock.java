@@ -264,7 +264,7 @@ public class TFCGrapevineTrellisBlock extends Block implements SimpleWaterlogged
             ForgeHooks.onCropsGrowPost(level, pos, state);
         }
     }
-    // 作物成果检查
+    // 作物结果数据
     private boolean checkClimateConditions(Level level, BlockPos pos, GrapevineType grapeType) {
         float temperature = Climate.getTemperature(level, pos);
         float rainfall = Climate.getRainfall(level, pos);
@@ -284,8 +284,8 @@ public class TFCGrapevineTrellisBlock extends Block implements SimpleWaterlogged
                         && rainfall >= 420.0f && rainfall <= 500.0f
                         && season == Season.FALL;
             case GREEN:
-                return temperature >= 20.0f && temperature <= 30.0f
-                        && rainfall >= 150.0f && rainfall <= 300.0f
+                return temperature >= -20.0f && temperature <= 80.0f
+                        && rainfall >= 0.0f && rainfall <= 800.0f
                         && season == Season.SUMMER;
             default:
                 return false;
