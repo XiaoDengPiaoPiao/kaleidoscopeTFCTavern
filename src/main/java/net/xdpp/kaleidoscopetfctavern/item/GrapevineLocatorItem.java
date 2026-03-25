@@ -16,6 +16,12 @@ import net.xdpp.kaleidoscopetfctavern.init.ModBlocks;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * 葡萄藤定位器物品
+ * <p>
+ * 用于在玩家附近搜索最近的葡萄藤
+ * 可以搜索野生葡萄藤和藤架上的葡萄藤
+ */
 public class GrapevineLocatorItem extends Item {
     private static final int SEARCH_RADIUS = 64;
 
@@ -23,6 +29,16 @@ public class GrapevineLocatorItem extends Item {
         super(properties);
     }
 
+    /**
+     * 使用物品时执行
+     * <p>
+     * 在玩家附近搜索葡萄藤，并显示最近葡萄藤的信息
+     * 
+     * @param level 世界
+     * @param player 玩家
+     * @param hand 手持物品的手
+     * @return 交互结果
+     */
     @Override
     public InteractionResultHolder<ItemStack> use(Level level, Player player, InteractionHand hand) {
         if (!level.isClientSide) {

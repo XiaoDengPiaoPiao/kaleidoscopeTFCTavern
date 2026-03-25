@@ -1,0 +1,11 @@
+{
+  "type": "kaleidoscopetfctavern:grape_climate_requirement",
+  "grape_type": {
+    "item": "kaleidoscopetfctavern:grape_white"
+  },
+  "min_temperature": 12.0,
+  "max_temperature": 26.0,
+  "min_rainfall": 420.0,
+  "max_rainfall": 500.0,
+  "season": "fall"
+}

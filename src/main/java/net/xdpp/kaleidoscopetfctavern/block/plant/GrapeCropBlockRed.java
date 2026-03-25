@@ -17,7 +17,7 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.LevelReader;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
-import net.minecraft.world.level.block.BonemealableBlock;
+
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.StateDefinition;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
@@ -27,11 +27,29 @@ import net.minecraft.world.phys.HitResult;
 import net.minecraftforge.common.ForgeHooks;
 import net.minecraftforge.common.ToolActions;
 
+/**
+ * 红葡萄作物方块
+ * <p>
+ * 生长在TFC兼容葡萄藤藤架下方的红葡萄作物
+ * 支持剪刀收割，有5个生长阶段
+ */
 @SuppressWarnings("deprecation")
-public class GrapeCropBlockRed extends Block implements BonemealableBlock {
+public class GrapeCropBlockRed extends Block {
+    /**
+     * 生长阶段属性
+     */
     public static final IntegerProperty AGE = BlockStateProperties.AGE_5;
+    
+    /**
+     * 最大生长阶段
+     */
     public static final int MAX_AGE = BlockStateProperties.MAX_AGE_5;
 
+    /**
+     * 构造红葡萄作物方块
+     * <p>
+     * 设置方块属性并注册默认状态
+     */
     public GrapeCropBlockRed() {
         super(Properties.of()
                 .strength(0.2f)
@@ -40,11 +58,34 @@ public class GrapeCropBlockRed extends Block implements BonemealableBlock {
         this.registerDefaultState(this.stateDefinition.any().setValue(AGE, 0));
     }
 
+    /**
+     * 获取克隆物品栈
+     * <p>
+     * 当玩家用鼠标中键点击方块时返回对应的红葡萄物品
+     * 
+     * @param state 方块状态
+     * @param target 点击目标
+     * @param level 世界
+     * @param pos 方块位置
+     * @param player 玩家
+     * @return 红葡萄物品栈
+     */
     @Override
     public ItemStack getCloneItemStack(BlockState state, HitResult target, BlockGetter level, BlockPos pos, Player player) {
         return ModItems.GRAPE_RED.get().getDefaultInstance();
     }
 
+    /**
+     * 随机刻执行
+     * <p>
+     * 检查方块是否能继续存活，如果不能则销毁
+     * 检查光照是否足够，如果足够则尝试生长
+     * 
+     * @param state 方块状态
+     * @param level 世界
+     * @param pos 方块位置
+     * @param random 随机源
+     */
     @Override
     public void randomTick(BlockState state, ServerLevel level, BlockPos pos, RandomSource random) {
         if (!this.canSurvive(state, level, pos)) {
@@ -61,6 +102,15 @@ public class GrapeCropBlockRed extends Block implements BonemealableBlock {
         }
     }
 
+    /**
+     * 生长作物
+     * <p>
+     * 将生长阶段增加1
+     * 
+     * @param level 世界
+     * @param pos 方块位置
+     * @param state 方块状态
+     */
     public void growCrops(Level level, BlockPos pos, BlockState state) {
         int age = state.getValue(AGE);
         if (age < MAX_AGE) {
@@ -68,10 +118,29 @@ public class GrapeCropBlockRed extends Block implements BonemealableBlock {
         }
     }
 
+    /**
+     * 检查是否达到最大生长阶段
+     * 
+     * @param state 方块状态
+     * @return 是否达到最大生长阶段
+     */
     public boolean isMaxAge(BlockState state) {
         return state.getValue(AGE) >= MAX_AGE;
     }
 
+    /**
+     * 右键交互方块
+     * <p>
+     * 当使用剪刀且作物成熟时，收割红葡萄并移除方块
+     * 
+     * @param state 方块状态
+     * @param level 世界
+     * @param pos 方块位置
+     * @param player 玩家
+     * @param hand 交互的手
+     * @param hitResult 交互结果
+     * @return 交互结果
+     */
     @Override
     public InteractionResult use(BlockState state, Level level, BlockPos pos, Player player,
                                  InteractionHand hand, BlockHitResult hitResult) {
@@ -86,6 +155,16 @@ public class GrapeCropBlockRed extends Block implements BonemealableBlock {
         return super.use(state, level, pos, player, hand, hitResult);
     }
 
+    /**
+     * 检查方块是否能继续存活
+     * <p>
+     * 需要上方是成熟的葡萄藤藤架（KT或TFC兼容的）
+     * 
+     * @param state 方块状态
+     * @param level 世界
+     * @param pos 方块位置
+     * @return 是否能继续存活
+     */
     @Override
     public boolean canSurvive(BlockState state, LevelReader level, BlockPos pos) {
         var aboveState = level.getBlockState(pos.above());
@@ -98,23 +177,15 @@ public class GrapeCropBlockRed extends Block implements BonemealableBlock {
         return false;
     }
 
+    /**
+     * 创建方块状态定义
+     * <p>
+     * 注册生长阶段属性
+     * 
+     * @param builder 方块状态定义构建器
+     */
     @Override
     protected void createBlockStateDefinition(StateDefinition.Builder<Block, BlockState> builder) {
         builder.add(AGE);
-    }
-
-    @Override
-    public boolean isValidBonemealTarget(LevelReader level, BlockPos pos, BlockState state, boolean isClient) {
-        return state.getValue(AGE) < MAX_AGE;
-    }
-
-    @Override
-    public boolean isBonemealSuccess(Level level, RandomSource random, BlockPos pos, BlockState state) {
-        return true;
-    }
-
-    @Override
-    public void performBonemeal(ServerLevel level, RandomSource random, BlockPos pos, BlockState state) {
-        this.growCrops(level, pos, state);
     }
 }

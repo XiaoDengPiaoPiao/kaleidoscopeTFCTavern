@@ -29,7 +29,18 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 public abstract class TrellisBlockMixin {
 
     /**
-     * 注入到 use 方法前，处理我们的葡萄藤和 TFC 泥土/草方块
+     * 注入到use方法前，处理我们的葡萄藤和TFC泥土/草方块
+     * <p>
+     * 允许将我们的葡萄藤放置到KT藤架上
+     * 同时支持TFC的泥土和草方块作为土壤
+     * 
+     * @param state 方块状态
+     * @param level 世界
+     * @param pos 方块位置
+     * @param player 玩家
+     * @param hand 交互的手
+     * @param hitResult 交互结果
+     * @param cir 回调信息
      */
     @Inject(method = "use(Lnet/minecraft/world/level/block/state/BlockState;Lnet/minecraft/world/level/Level;Lnet/minecraft/core/BlockPos;Lnet/minecraft/world/entity/player/Player;Lnet/minecraft/world/InteractionHand;Lnet/minecraft/world/phys/BlockHitResult;)Lnet/minecraft/world/InteractionResult;",
             at = @At("HEAD"),
@@ -87,6 +98,11 @@ public abstract class TrellisBlockMixin {
 
     /**
      * 检查方块是否在指定命名空间的标签中
+     * 
+     * @param state 方块状态
+     * @param namespace 命名空间
+     * @param tagName 标签名
+     * @return 是否在标签中
      */
     private boolean isInTag(BlockState state, String namespace, String tagName) {
         var tag = net.minecraft.tags.TagKey.create(

@@ -18,9 +18,25 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
+/**
+ * 果盆方块实体混合类
+ * <p>
+ * 用于修改KT果盆的流体转移逻辑
+ * 让果盆踩出的葡萄汁可以用TFC木桶（tfc:wooden_bucket）接取
+ */
 @Mixin(value = PressingTubBlockEntity.class, remap = false)
 public abstract class PressingTubBlockEntityMixin {
-
+    
+    /**
+     * 在getResult方法执行前拦截
+     * <p>
+     * 检测是否使用TFC木桶从果盆接取流体
+     * 如果是，则尝试将果盆的流体转移到TFC木桶中
+     * 
+     * @param target 目标实体
+     * @param carriedStack 手持物品
+     * @param cir 回调信息
+     */
     @Inject(method = "getResult", at = @At("HEAD"), cancellable = true, remap = false)
     private void beforeGetResult(LivingEntity target, ItemStack carriedStack, CallbackInfoReturnable<Boolean> cir) {
         PressingTubBlockEntity self = (PressingTubBlockEntity) (Object) this;
@@ -62,7 +78,15 @@ public abstract class PressingTubBlockEntityMixin {
             }
         }
     }
-
+    
+    /**
+     * 获取TFC流体物品能力
+     * <p>
+     * 通过反射获取TFC的FLUID_ITEM能力
+     * 
+     * @param stack 物品栈
+     * @return TFC流体物品能力的懒加载可选对象
+     */
     @SuppressWarnings("unchecked")
     private LazyOptional<IFluidHandlerItem> getTFCFluidHandler(ItemStack stack) {
         try {
@@ -76,7 +100,16 @@ public abstract class PressingTubBlockEntityMixin {
         }
         return LazyOptional.empty();
     }
-
+    
+    /**
+     * 给实体物品
+     * <p>
+     * 先尝试调用KT的ItemUtils.getItemToLivingEntity方法
+     * 如果失败，则直接给玩家物品栏
+     * 
+     * @param user 用户实体
+     * @param item 物品
+     */
     private void giveItemToLivingEntity(LivingEntity user, ItemStack item) {
         try {
             Class<?> itemUtilsClass = Class.forName("com.github.ysbbbbbb.kaleidoscopetavern.util.ItemUtils");

@@ -17,10 +17,12 @@ import org.spongepowered.asm.mixin.Overwrite;
 public abstract class GrapevineTrellisBlockMixin {
 
     /**
-     * 覆盖 belowSupportGrow 方法，兼容 TFC 的泥土和草方块
+     * 覆盖belowSupportGrow方法，兼容TFC的泥土和草方块
      *
-     * @reason 需要兼容 TFC 的泥土和草方块，让葡萄藤能在 TFC 世界中正常生长
+     * @reason 需要兼容TFC的泥土和草方块，让葡萄藤能在TFC世界中正常生长
      * @author xdpp
+     * @param belowState 下方的方块状态
+     * @return 是否可以在此方块上生长
      */
     @Overwrite
     public boolean belowSupportGrow(BlockState belowState) {
@@ -36,6 +38,11 @@ public abstract class GrapevineTrellisBlockMixin {
 
     /**
      * 检查方块是否在指定命名空间的标签中
+     * 
+     * @param state 方块状态
+     * @param namespace 命名空间
+     * @param tagName 标签名
+     * @return 是否在标签中
      */
     private boolean isInTag(BlockState state, String namespace, String tagName) {
         var tag = net.minecraft.tags.TagKey.create(

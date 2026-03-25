@@ -6,8 +6,11 @@ import net.dries007.tfc.util.calendar.Calendars;
 import net.dries007.tfc.util.calendar.Season;
 import net.dries007.tfc.util.climate.Climate;
 import net.xdpp.kaleidoscopetfctavern.block.properties.GrapevineType;
+import net.xdpp.kaleidoscopetfctavern.config.KTConfig;
 import net.xdpp.kaleidoscopetfctavern.init.ModBlocks;
 import net.xdpp.kaleidoscopetfctavern.init.ModItems;
+import net.xdpp.kaleidoscopetfctavern.recipe.GrapeClimateRequirementRecipe;
+import net.xdpp.kaleidoscopetfctavern.recipe.ModRecipes;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.server.level.ServerLevel;
@@ -46,15 +49,19 @@ import net.minecraftforge.common.ToolActions;
 import static com.github.ysbbbbbb.kaleidoscopetavern.block.plant.ITrellis.axisHasTrellis;
 import static com.github.ysbbbbbb.kaleidoscopetavern.block.plant.ITrellis.updateType;
 
+/**
+ * TFC兼容葡萄藤藤架方块
+ * <p>
+ * 基于 Kaleidoscope Tavern 的 GrapevineTrellisBlock 修改
+ * 增加了TFC的气候和季节支持，以及TFC泥土/草方块兼容性
+ */
 @SuppressWarnings("deprecation")
-public class TFCGrapevineTrellisBlock extends Block implements SimpleWaterloggedBlock, ITrellis, net.minecraft.world.level.block.BonemealableBlock {
+public class TFCGrapevineTrellisBlock extends Block implements SimpleWaterloggedBlock, ITrellis {
     public static final BooleanProperty WATERLOGGED = BlockStateProperties.WATERLOGGED;
     public static final IntegerProperty AGE = BlockStateProperties.AGE_3;
     public static final int MAX_AGE = BlockStateProperties.MAX_AGE_3;
     public static final EnumProperty<GrapevineType> GRAPE_TYPE = EnumProperty.create("grape_type", GrapevineType.class);
     public static final Direction[] CHECK_DIRECTION = new Direction[]{Direction.UP, Direction.EAST, Direction.WEST, Direction.SOUTH, Direction.NORTH};
-
-    private final float growPerTickProbability;
 
     public TFCGrapevineTrellisBlock() {
         super(Properties.of()
@@ -71,9 +78,21 @@ public class TFCGrapevineTrellisBlock extends Block implements SimpleWaterlogged
                 .setValue(AGE, 0)
                 .setValue(GRAPE_TYPE, GrapevineType.PURPLE)
                 .setValue(WATERLOGGED, false));
-        this.growPerTickProbability = 0.25F;
     }
-
+    
+    /**
+     * 右键交互方块时执行
+     * <p>
+     * 支持用剪刀从藤架上取下葡萄藤
+     * 
+     * @param state 方块状态
+     * @param level 世界
+     * @param pos 方块位置
+     * @param player 玩家
+     * @param hand 交互的手
+     * @param hitResult 交互结果
+     * @return 交互结果
+     */
     @Override
     public InteractionResult use(BlockState state, Level level, BlockPos pos, Player player,
                                  InteractionHand hand, BlockHitResult hitResult) {
@@ -110,7 +129,20 @@ public class TFCGrapevineTrellisBlock extends Block implements SimpleWaterlogged
         player.playSound(SoundEvents.BEEHIVE_SHEAR);
         return InteractionResult.SUCCESS;
     }
-
+    
+    /**
+     * 更新方块形状
+     * <p>
+     * 处理水logged和藤架类型的更新
+     * 
+     * @param state 方块状态
+     * @param direction 方向
+     * @param neighborState 邻居方块状态
+     * @param level 世界
+     * @param pos 方块位置
+     * @param neighborPos 邻居方块位置
+     * @return 更新后的方块状态
+     */
     @Override
     public BlockState updateShape(BlockState state, Direction direction, BlockState neighborState,
                                   LevelAccessor level, BlockPos pos, BlockPos neighborPos) {
@@ -125,25 +157,57 @@ public class TFCGrapevineTrellisBlock extends Block implements SimpleWaterlogged
         state = state.setValue(TYPE, trellisType);
         return super.updateShape(state, direction, neighborState, level, pos, neighborPos);
     }
-
+    
+    /**
+     * 检查方块类型是否相同
+     * <p>
+     * 判断是藤架还是葡萄藤藤架
+     * 
+     * @param state 方块状态
+     * @return 是否是相同类型
+     */
     @Override
     public boolean sameType(BlockState state) {
         return state.is(com.github.ysbbbbbb.kaleidoscopetavern.init.ModBlocks.TRELLIS.get()) 
                 || state.is(com.github.ysbbbbbb.kaleidoscopetavern.init.ModBlocks.GRAPEVINE_TRELLIS.get())
                 || state.is(this);
     }
-
+    
+    /**
+     * 随机刻执行
+     * <p>
+     * 处理葡萄藤的生长
+     * 
+     * @param state 方块状态
+     * @param level 世界
+     * @param pos 方块位置
+     * @param random 随机源
+     */
     @Override
     public void randomTick(BlockState state, ServerLevel level, BlockPos pos, RandomSource random) {
-        if (ForgeHooks.onCropsGrowPre(level, pos, state, random.nextDouble() < this.growPerTickProbability)) {
+        if (ForgeHooks.onCropsGrowPre(level, pos, state, random.nextDouble() < KTConfig.GRAPEVINE_GROWTH_CHANCE.get())) {
             this.doGrow(level, pos, state);
         }
     }
-
+    
+    /**
+     * 检查是否达到最大年龄
+     * 
+     * @param state 方块状态
+     * @return 是否达到最大年龄
+     */
     public boolean isMaxAge(BlockState state) {
         return state.getValue(AGE) >= MAX_AGE;
     }
-
+    
+    /**
+     * 检查下方方块是否支持生长
+     * <p>
+     * 支持原版泥土、TFC泥土和TFC草方块
+     * 
+     * @param belowState 下方方块状态
+     * @return 是否支持生长
+     */
     public boolean belowSupportGrow(BlockState belowState) {
         if (belowState.is(this)) {
             return isMaxAge(belowState);
@@ -153,7 +217,15 @@ public class TFCGrapevineTrellisBlock extends Block implements SimpleWaterlogged
                    isInTag(belowState, "tfc", "grass");
         }
     }
-
+    
+    /**
+     * 检查方块是否在指定标签中
+     * 
+     * @param state 方块状态
+     * @param namespace 命名空间
+     * @param tagName 标签名
+     * @return 是否在标签中
+     */
     private boolean isInTag(BlockState state, String namespace, String tagName) {
         var tag = net.minecraft.tags.TagKey.create(
             net.minecraft.core.registries.Registries.BLOCK,
@@ -161,11 +233,25 @@ public class TFCGrapevineTrellisBlock extends Block implements SimpleWaterlogged
         );
         return state.is(tag);
     }
-
+    
+    /**
+     * 检查是否可以生长到某个位置
+     * 
+     * @param checkState 要检查的方块状态
+     * @return 是否可以生长
+     */
     public boolean canGrowInto(BlockState checkState) {
         return checkState.is(com.github.ysbbbbbb.kaleidoscopetavern.init.ModBlocks.TRELLIS.get());
     }
-
+    
+    /**
+     * 获取生长后的方块状态
+     * 
+     * @param direction 生长方向
+     * @param checkState 目标位置的方块状态
+     * @param grapeType 葡萄藤类型
+     * @return 生长后的方块状态
+     */
     public BlockState getGrowIntoState(Direction direction, BlockState checkState, GrapevineType grapeType) {
         var type = checkState.getOptionalValue(TYPE).orElse(TrellisType.SINGLE);
         boolean waterlogged = checkState.getOptionalValue(WATERLOGGED).orElse(false);
@@ -176,14 +262,29 @@ public class TFCGrapevineTrellisBlock extends Block implements SimpleWaterlogged
                 .setValue(GRAPE_TYPE, grapeType)
                 .setValue(WATERLOGGED, waterlogged);
     }
-
+    
+    /**
+     * 检查是否可以生长葡萄作物
+     * 
+     * @param level 世界
+     * @param pos 方块位置
+     * @return 是否可以生长葡萄
+     */
     public boolean canGrowGrape(LevelReader level, BlockPos pos) {
         if (pos.getY() < level.getMinBuildHeight() + 1) {
             return false;
         }
         return level.getBlockState(pos.below()).isAir();
     }
-
+    
+    /**
+     * 检查是否可以生长
+     * 
+     * @param level 世界
+     * @param pos 方块位置
+     * @param state 方块状态
+     * @return 是否可以生长
+     */
     public boolean canGrow(LevelReader level, BlockPos pos, BlockState state) {
         if (state.getValue(TYPE) == TrellisType.SINGLE) {
             BlockState belowState = level.getBlockState(pos.below());
@@ -209,7 +310,16 @@ public class TFCGrapevineTrellisBlock extends Block implements SimpleWaterlogged
             return true;
         }
     }
-
+    
+    /**
+     * 执行生长逻辑
+     * <p>
+     * 处理葡萄藤的生长和葡萄作物的生成
+     * 
+     * @param level 世界
+     * @param pos 方块位置
+     * @param state 方块状态
+     */
     public void doGrow(Level level, BlockPos pos, BlockState state) {
         var grapeType = state.getValue(GRAPE_TYPE);
         
@@ -264,64 +374,76 @@ public class TFCGrapevineTrellisBlock extends Block implements SimpleWaterlogged
             ForgeHooks.onCropsGrowPost(level, pos, state);
         }
     }
-    // 作物结果数据
+    
+    /**
+     * 获取葡萄藤类型对应的物品栈
+     * 
+     * @param grapeType 葡萄藤类型
+     * @return 对应的物品栈
+     */
+    private ItemStack getGrapeStackForType(GrapevineType grapeType) {
+        return switch (grapeType) {
+            case PURPLE -> ModItems.GRAPE_PURPLE.get().getDefaultInstance();
+            case RED -> ModItems.GRAPE_RED.get().getDefaultInstance();
+            case WHITE -> ModItems.GRAPE_WHITE.get().getDefaultInstance();
+            case GREEN -> ModItems.GRAPE_GREEN.get().getDefaultInstance();
+        };
+    }
+    
+    /**
+     * 检查气候条件
+     * <p>
+     * 根据配方系统定义的气候条件检查温度、降雨量和季节是否合适
+     * 
+     * @param level 世界
+     * @param pos 方块位置
+     * @param grapeType 葡萄藤类型
+     * @return 气候条件是否满足
+     */
     private boolean checkClimateConditions(Level level, BlockPos pos, GrapevineType grapeType) {
         float temperature = Climate.getTemperature(level, pos);
         float rainfall = Climate.getRainfall(level, pos);
         Season season = Calendars.get(level).getCalendarMonthOfYear().getSeason();
+        ItemStack grapeStack = getGrapeStackForType(grapeType);
 
-        switch (grapeType) {
-            case PURPLE:
-                return temperature >= 15.0f && temperature <= 28.0f
-                        && rainfall >= 330.0f && rainfall <= 450.0f
-                        && season == Season.FALL;
-            case RED:
-                return temperature >= 20.0f && temperature <= 32.0f
-                        && rainfall >= 210.0f && rainfall <= 300.0f
-                        && season == Season.SUMMER;
-            case WHITE:
-                return temperature >= 12.0f && temperature <= 26.0f
-                        && rainfall >= 420.0f && rainfall <= 500.0f
-                        && season == Season.FALL;
-            case GREEN:
-                return temperature >= -20.0f && temperature <= 80.0f
-                        && rainfall >= 0.0f && rainfall <= 800.0f
-                        && season == Season.SUMMER;
-            default:
-                return false;
+        if (level.getRecipeManager() != null) {
+            for (var recipe : level.getRecipeManager().getAllRecipesFor(ModRecipes.GRAPE_CLIMATE_TYPE.get())) {
+                if (recipe.matches(temperature, rainfall, season, grapeStack)) {
+                    return true;
+                }
+            }
         }
-    }
 
-    @Override
-    public boolean isValidBonemealTarget(LevelReader level, BlockPos pos, BlockState state, boolean isClient) {
-        return this.canGrow(level, pos, state);
+        return false;
     }
-
-    @Override
-    public boolean isBonemealSuccess(Level level, RandomSource random, BlockPos pos, BlockState state) {
-        return true;
-    }
-
-    @Override
-    public void performBonemeal(ServerLevel level, RandomSource random, BlockPos pos, BlockState state) {
-        this.doGrow(level, pos, state);
-    }
-
+    
+    /**
+     * 创建方块状态定义
+     */
     @Override
     protected void createBlockStateDefinition(StateDefinition.Builder<Block, BlockState> builder) {
         builder.add(TYPE, AGE, GRAPE_TYPE, WATERLOGGED);
     }
-
+    
+    /**
+     * 获取碰撞形状
+     */
     @Override
     public VoxelShape getCollisionShape(BlockState state, BlockGetter level, BlockPos pos, CollisionContext context) {
         return collisionShape(state.getValue(TYPE));
     }
-
+    
+    /**
+     * 获取选择形状
+     */
     @Override
     public VoxelShape getShape(BlockState state, BlockGetter level, BlockPos pos, CollisionContext context) {
         return selectShape(state.getValue(TYPE));
     }
-
+    
+    /**
+     * 获取克隆物品栈
+     */
     @Override
     public ItemStack getCloneItemStack(BlockState state, HitResult target, BlockGetter level, BlockPos pos, Player player) {
         var grapeType = state.getValue(GRAPE_TYPE);
@@ -345,7 +467,10 @@ public class TFCGrapevineTrellisBlock extends Block implements SimpleWaterlogged
         }
         return cloneItem;
     }
-
+    
+    /**
+     * 获取流体状态
+     */
     @Override
     public FluidState getFluidState(BlockState state) {
         return state.getValue(WATERLOGGED) ? Fluids.WATER.getSource(false) : super.getFluidState(state);

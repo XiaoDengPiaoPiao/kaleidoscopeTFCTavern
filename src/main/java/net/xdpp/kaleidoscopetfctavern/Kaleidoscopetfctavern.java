@@ -2,9 +2,11 @@ package net.xdpp.kaleidoscopetfctavern;
 
 import com.mojang.logging.LogUtils;
 import net.minecraft.resources.ResourceLocation;
+import net.xdpp.kaleidoscopetfctavern.config.KTConfig;
 import net.xdpp.kaleidoscopetfctavern.init.ModBlocks;
 import net.xdpp.kaleidoscopetfctavern.init.ModItems;
 import net.xdpp.kaleidoscopetfctavern.init.WildGrapevineTypes;
+import net.xdpp.kaleidoscopetfctavern.recipe.ModRecipes;
 import net.minecraft.client.Minecraft;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.world.item.CreativeModeTab;
@@ -14,7 +16,9 @@ import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.server.ServerStartingEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
+import net.minecraftforge.fml.ModLoadingContext;
 import net.minecraftforge.fml.common.Mod;
+import net.minecraftforge.fml.config.ModConfig;
 import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
 import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
@@ -42,11 +46,15 @@ public class Kaleidoscopetfctavern {
     }
 
     public Kaleidoscopetfctavern() {
+        ModLoadingContext.get().registerConfig(ModConfig.Type.COMMON, KTConfig.SPEC);
+        
         var modEventBus = FMLJavaModLoadingContext.get().getModEventBus();
 
         ModBlocks.BLOCKS.register(modEventBus);
         ModItems.ITEMS.register(modEventBus);
         CREATIVE_MODE_TABS.register(modEventBus);
+        ModRecipes.RECIPE_SERIALIZERS.register(modEventBus);
+        ModRecipes.RECIPE_TYPES.register(modEventBus);
 
         registerCreativeTabs();
 

@@ -1,5 +1,6 @@
 package net.xdpp.kaleidoscopetfctavern.block.plant;
 
+import com.github.ysbbbbbb.kaleidoscopetavern.block.properties.TrellisType;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.server.level.ServerLevel;
@@ -16,7 +17,7 @@ import net.minecraft.world.level.LevelAccessor;
 import net.minecraft.world.level.LevelReader;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
-import net.minecraft.world.level.block.BonemealableBlock;
+
 import net.minecraft.world.level.block.SoundType;
 import net.minecraft.world.level.block.state.BlockBehaviour;
 import net.minecraft.world.level.block.state.BlockState;
@@ -26,12 +27,14 @@ import net.minecraft.world.level.block.state.properties.IntegerProperty;
 import net.minecraft.world.level.material.MapColor;
 import net.minecraft.world.level.material.PushReaction;
 import net.minecraft.world.level.storage.loot.LootParams;
+import net.minecraft.world.level.storage.loot.parameters.LootContextParams;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.HitResult;
 import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.VoxelShape;
 import net.minecraftforge.common.ForgeHooks;
 import net.minecraftforge.common.ToolActions;
+import net.xdpp.kaleidoscopetfctavern.config.KTConfig;
 
 import java.util.Collections;
 import java.util.List;
@@ -44,14 +47,37 @@ import java.util.function.Supplier;
  * 支持动态设置葡萄物品
  */
 @SuppressWarnings("deprecation")
-public class BaseGrapeCropBlock extends Block implements BonemealableBlock {
+public class BaseGrapeCropBlock extends Block {
+    /**
+     * 生长阶段属性
+     */
     public static final IntegerProperty AGE = BlockStateProperties.AGE_5;
+    
+    /**
+     * 最大生长阶段
+     */
     public static final int MAX_AGE = BlockStateProperties.MAX_AGE_5;
+    
+    /**
+     * 方块碰撞形状
+     */
     public static final VoxelShape SHAPE = Block.box(2, 6, 2, 14, 16, 14);
 
-    private final float growPerTickProbability;
+    /**
+     * 葡萄物品供应商
+     * <p>
+     * 用于延迟获取对应的葡萄物品
+     */
     private final Supplier<Item> grapeItemSupplier;
 
+    /**
+     * 构造葡萄作物方块
+     * <p>
+     * 设置方块属性、注册默认状态
+     * 初始化葡萄物品供应商
+     * 
+     * @param grapeItemSupplier 葡萄物品供应商
+     */
     public BaseGrapeCropBlock(Supplier<Item> grapeItemSupplier) {
         super(Properties.of()
                 .mapColor(MapColor.PLANT)
@@ -63,7 +89,6 @@ public class BaseGrapeCropBlock extends Block implements BonemealableBlock {
                 .pushReaction(PushReaction.DESTROY));
         this.registerDefaultState(this.stateDefinition.any()
                 .setValue(AGE, 0));
-        this.growPerTickProbability = 0.25F;
         this.grapeItemSupplier = grapeItemSupplier;
     }
 
@@ -72,8 +97,20 @@ public class BaseGrapeCropBlock extends Block implements BonemealableBlock {
                                  InteractionHand hand, BlockHitResult hitResult) {
         ItemStack heldItem = player.getItemInHand(hand);
         if (heldItem.canPerformAction(ToolActions.SHEARS_HARVEST) && isMaxAge(state)) {
+            if (!level.isClientSide) {
+                LootParams.Builder lootParamsBuilder = new LootParams.Builder((ServerLevel) level)
+                        .withParameter(LootContextParams.ORIGIN, pos.getCenter())
+                        .withParameter(LootContextParams.TOOL, heldItem)
+                        .withParameter(LootContextParams.THIS_ENTITY, player)
+                        .withParameter(LootContextParams.BLOCK_STATE, state);
+                
+                List<ItemStack> drops = getDrops(state, lootParamsBuilder);
+                for (ItemStack drop : drops) {
+                    Block.popResource(level, pos, drop);
+                }
+            }
+            
             level.setBlockAndUpdate(pos, Blocks.AIR.defaultBlockState());
-            Block.popResource(level, pos, new ItemStack(grapeItemSupplier.get(), 3));
             heldItem.hurtAndBreak(1, player, p -> p.broadcastBreakEvent(hand));
             player.playSound(SoundEvents.BEEHIVE_SHEAR);
             return InteractionResult.SUCCESS;
@@ -88,7 +125,7 @@ public class BaseGrapeCropBlock extends Block implements BonemealableBlock {
 
     @Override
     public void randomTick(BlockState state, ServerLevel level, BlockPos pos, RandomSource random) {
-        if (ForgeHooks.onCropsGrowPre(level, pos, state, random.nextDouble() < this.growPerTickProbability)) {
+        if (ForgeHooks.onCropsGrowPre(level, pos, state, random.nextDouble() < KTConfig.GRAPE_CROP_GROWTH_CHANCE.get())) {
             level.setBlockAndUpdate(pos, state.cycle(AGE));
             ForgeHooks.onCropsGrowPost(level, pos, state);
         }
@@ -114,22 +151,6 @@ public class BaseGrapeCropBlock extends Block implements BonemealableBlock {
 
     public boolean isMaxAge(BlockState state) {
         return state.getValue(AGE) >= MAX_AGE;
-    }
-
-    @Override
-    public boolean isValidBonemealTarget(LevelReader level, BlockPos pos, BlockState state, boolean isClient) {
-        return !this.isMaxAge(state);
-    }
-
-    @Override
-    public boolean isBonemealSuccess(Level level, RandomSource random, BlockPos pos, BlockState state) {
-        return true;
-    }
-
-    @Override
-    public void performBonemeal(ServerLevel level, RandomSource random, BlockPos pos, BlockState state) {
-        int newAge = Math.min(state.getValue(AGE) + random.nextInt(1, 3), MAX_AGE);
-        level.setBlockAndUpdate(pos, state.setValue(AGE, newAge));
     }
 
     @Override

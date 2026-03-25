@@ -1,0 +1,11 @@
+{
+  "type": "kaleidoscopetfctavern:grape_climate_requirement",
+  "grape_type": {
+    "item": "kaleidoscopetfctavern:grape_green"
+  },
+  "min_temperature": -20.0,
+  "max_temperature": 30.0,
+  "min_rainfall": 0.0,
+  "max_rainfall": 3000.0,
+  "season": "summer"
+}
