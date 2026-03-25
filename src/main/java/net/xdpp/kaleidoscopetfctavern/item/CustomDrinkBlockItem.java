@@ -44,6 +44,13 @@ public class CustomDrinkBlockItem extends BottleBlockItem implements IHasContain
     public CustomDrinkBlockItem(Block block) {
         super(block, new Properties().stacksTo(16));
     }
+    
+    @Override
+    public ItemStack getDefaultInstance() {
+        ItemStack stack = super.getDefaultInstance();
+        BottleBlockItem.setBrewLevel(stack, 7);
+        return stack;
+    }
 
     @Override
     public int getUseDuration(ItemStack stack) {
@@ -112,7 +119,17 @@ public class CustomDrinkBlockItem extends BottleBlockItem implements IHasContain
             CriteriaTriggers.CONSUME_ITEM.trigger(serverPlayer, stack);
             serverPlayer.awardStat(Stats.ITEM_USED.get(this));
         }
+        
+        if (entity instanceof Player player) {
+            if (BottleBlockItem.getBrewLevel(stack) <= 0) {
+                BottleBlockItem.setBrewLevel(stack, 7);
+            }
+            
+            player.getFoodData().eat(this, stack, player);
+        }
+        
         this.addDrinkEffect(stack, level, entity);
+        
         if (entity instanceof Player player && !player.isCreative()) {
             stack.shrink(1);
         }

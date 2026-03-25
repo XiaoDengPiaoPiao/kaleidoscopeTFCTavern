@@ -3,7 +3,7 @@
   "effects": [
     [
       {
-        "effect": "minecraft:confusion",
+        "effect": "minecraft:nausea",
         "duration": 35,
         "amplifier": 0,
         "probability": 1.0
@@ -11,7 +11,7 @@
     ],
     [
       {
-        "effect": "minecraft:confusion",
+        "effect": "minecraft:nausea",
         "duration": 10,
         "amplifier": 0,
         "probability": 1.0
@@ -19,7 +19,7 @@
     ],
     [
       {
-        "effect": "minecraft:heal",
+        "effect": "minecraft:instant_health",
         "duration": 0,
         "amplifier": 0,
         "probability": 1.0
@@ -33,7 +33,7 @@
     ],
     [
       {
-        "effect": "minecraft:heal",
+        "effect": "minecraft:instant_health",
         "duration": 0,
         "amplifier": 1,
         "probability": 1.0
@@ -47,7 +47,7 @@
     ],
     [
       {
-        "effect": "minecraft:heal",
+        "effect": "minecraft:instant_health",
         "duration": 0,
         "amplifier": 1,
         "probability": 1.0
@@ -61,7 +61,7 @@
     ],
     [
       {
-        "effect": "minecraft:heal",
+        "effect": "minecraft:instant_health",
         "duration": 0,
         "amplifier": 1,
         "probability": 1.0
@@ -75,7 +75,7 @@
     ],
     [
       {
-        "effect": "minecraft:heal",
+        "effect": "minecraft:instant_health",
         "duration": 0,
         "amplifier": 2,
         "probability": 1.0
