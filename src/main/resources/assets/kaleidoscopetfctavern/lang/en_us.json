@@ -1,5 +1,5 @@
 {
-  "itemGroup.kaleidoscopetfctavern.main": "Kaleidoscope Tavern - TFC",
+  "item_group.kaleidoscopetfctavern.main.name": "KTFC",
   "block.kaleidoscopetfctavern.wild_grapevine_purple": "Purple Grapevine",
   "block.kaleidoscopetfctavern.wild_grapevine_plant_purple": "Purple Grapevine (Planted)",
   "block.kaleidoscopetfctavern.grape_crop_purple": "Purple Grape",
@@ -29,5 +29,23 @@
   "block.kaleidoscopetfctavern.purple_grape_juice": "Purple Grape Juice",
   "block.kaleidoscopetfctavern.red_grape_juice": "Red Grape Juice",
   "block.kaleidoscopetfctavern.white_grape_juice": "White Grape Juice",
-  "block.kaleidoscopetfctavern.green_grape_juice": "Green Grape Juice"
+  "block.kaleidoscopetfctavern.green_grape_juice": "Green Grape Juice",
+  "block.kaleidoscopetfctavern.purple_wine": "Purple Wine",
+  "item.kaleidoscopetfctavern.purple_wine": "Purple Wine",
+  "block.kaleidoscopetfctavern.red_wine": "Red Wine",
+  "item.kaleidoscopetfctavern.red_wine": "Red Wine",
+  "block.kaleidoscopetfctavern.white_wine": "White Wine",
+  "item.kaleidoscopetfctavern.white_wine": "White Wine",
+  "block.kaleidoscopetfctavern.ice_purple_wine": "Iced Purple Wine",
+  "item.kaleidoscopetfctavern.ice_purple_wine": "Iced Purple Wine",
+  "block.kaleidoscopetfctavern.ice_red_wine": "Iced Red Wine",
+  "item.kaleidoscopetfctavern.ice_red_wine": "Iced Red Wine",
+  "block.kaleidoscopetfctavern.ice_white_wine": "Iced White Wine",
+  "item.kaleidoscopetfctavern.ice_white_wine": "Iced White Wine",
+  "block.kaleidoscopetfctavern.flower_purple_wine": "Flower Purple Wine",
+  "item.kaleidoscopetfctavern.flower_purple_wine": "Flower Purple Wine",
+  "block.kaleidoscopetfctavern.flower_red_wine": "Flower Red Wine",
+  "item.kaleidoscopetfctavern.flower_red_wine": "Flower Red Wine",
+  "block.kaleidoscopetfctavern.flower_white_wine": "Flower White Wine",
+  "item.kaleidoscopetfctavern.flower_white_wine": "Flower White Wine"
 }

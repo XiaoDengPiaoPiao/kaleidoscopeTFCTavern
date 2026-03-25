@@ -2,6 +2,7 @@ package net.xdpp.kaleidoscopetfctavern.init;
 
 import com.github.ysbbbbbb.kaleidoscopetavern.item.JuiceBucketItem;
 import net.xdpp.kaleidoscopetfctavern.Kaleidoscopetfctavern;
+import net.xdpp.kaleidoscopetfctavern.item.CustomDrinkBlockItem;
 import net.xdpp.kaleidoscopetfctavern.item.GrapevineLocatorItem;
 import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.Item;
@@ -98,4 +99,58 @@ public interface ModItems {
      */
     RegistryObject<Item> GREEN_GRAPE_BUCKET = ITEMS.register("green_grape_bucket",
             () -> new JuiceBucketItem(ModFluids.GREEN_GRAPE_JUICE));
+
+    /**
+     * 紫葡萄酒物品
+     */
+    RegistryObject<Item> PURPLE_WINE = ITEMS.register("purple_wine",
+            () -> new CustomDrinkBlockItem(ModBlocks.PURPLE_WINE.get()));
+
+    /**
+     * 红葡萄酒物品
+     */
+    RegistryObject<Item> RED_WINE = ITEMS.register("red_wine",
+            () -> new CustomDrinkBlockItem(ModBlocks.RED_WINE.get()));
+
+    /**
+     * 白葡萄酒物品
+     */
+    RegistryObject<Item> WHITE_WINE = ITEMS.register("white_wine",
+            () -> new CustomDrinkBlockItem(ModBlocks.WHITE_WINE.get()));
+
+    /**
+     * 冰紫葡萄酒物品
+     */
+    RegistryObject<Item> ICE_PURPLE_WINE = ITEMS.register("ice_purple_wine",
+            () -> new CustomDrinkBlockItem(ModBlocks.ICE_PURPLE_WINE.get()));
+
+    /**
+     * 冰红葡萄酒物品
+     */
+    RegistryObject<Item> ICE_RED_WINE = ITEMS.register("ice_red_wine",
+            () -> new CustomDrinkBlockItem(ModBlocks.ICE_RED_WINE.get()));
+
+    /**
+     * 冰白葡萄酒物品
+     */
+    RegistryObject<Item> ICE_WHITE_WINE = ITEMS.register("ice_white_wine",
+            () -> new CustomDrinkBlockItem(ModBlocks.ICE_WHITE_WINE.get()));
+
+    /**
+     * 花酿紫葡萄酒物品
+     */
+    RegistryObject<Item> FLOWER_PURPLE_WINE = ITEMS.register("flower_purple_wine",
+            () -> new CustomDrinkBlockItem(ModBlocks.FLOWER_PURPLE_WINE.get()));
+
+    /**
+     * 花酿红葡萄酒物品
+     */
+    RegistryObject<Item> FLOWER_RED_WINE = ITEMS.register("flower_red_wine",
+            () -> new CustomDrinkBlockItem(ModBlocks.FLOWER_RED_WINE.get()));
+
+    /**
+     * 花酿白葡萄酒物品
+     */
+    RegistryObject<Item> FLOWER_WHITE_WINE = ITEMS.register("flower_white_wine",
+            () -> new CustomDrinkBlockItem(ModBlocks.FLOWER_WHITE_WINE.get()));
 }

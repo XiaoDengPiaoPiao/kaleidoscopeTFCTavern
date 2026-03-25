@@ -9,6 +9,7 @@ import net.xdpp.kaleidoscopetfctavern.init.WildGrapevineTypes;
 import net.xdpp.kaleidoscopetfctavern.recipe.ModRecipes;
 import net.minecraft.client.Minecraft;
 import net.minecraft.core.registries.Registries;
+import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.CreativeModeTab;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.level.block.Block;
@@ -65,6 +66,7 @@ public class Kaleidoscopetfctavern {
 
     private void registerCreativeTabs() {
         CREATIVE_MODE_TABS.register("main", () -> CreativeModeTab.builder()
+                .title(Component.translatable("item_group.kaleidoscopetfctavern.main.name"))
                 .icon(() -> ModItems.WILD_GRAPEVINE_PURPLE.get().getDefaultInstance())
                 .displayItems((parameters, output) -> {
                     output.accept(ModItems.WILD_GRAPEVINE_PURPLE.get());
@@ -80,6 +82,15 @@ public class Kaleidoscopetfctavern {
                     output.accept(ModItems.WHITE_GRAPE_BUCKET.get());
                     output.accept(ModItems.GREEN_GRAPE_BUCKET.get());
                     output.accept(ModItems.GRAPEVINE_LOCATOR.get());
+                    output.accept(ModItems.PURPLE_WINE.get());
+                    output.accept(ModItems.RED_WINE.get());
+                    output.accept(ModItems.WHITE_WINE.get());
+                    output.accept(ModItems.ICE_PURPLE_WINE.get());
+                    output.accept(ModItems.ICE_RED_WINE.get());
+                    output.accept(ModItems.ICE_WHITE_WINE.get());
+                    output.accept(ModItems.FLOWER_PURPLE_WINE.get());
+                    output.accept(ModItems.FLOWER_RED_WINE.get());
+                    output.accept(ModItems.FLOWER_WHITE_WINE.get());
                 })
                 .build());
     }

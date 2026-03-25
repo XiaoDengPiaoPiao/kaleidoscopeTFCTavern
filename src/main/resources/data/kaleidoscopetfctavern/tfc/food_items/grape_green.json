@@ -1,0 +1,10 @@
+{
+  "ingredient": {
+    "item": "kaleidoscopetfctavern:grape_green"
+  },
+  "hunger": 4,
+  "saturation": 0.5,
+  "water": 10,
+  "decay_modifier": 4.9,
+  "fruit": 0.5
+}

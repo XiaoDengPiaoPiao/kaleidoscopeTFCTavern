@@ -1,5 +1,6 @@
 package net.xdpp.kaleidoscopetfctavern.init;
 
+import com.github.ysbbbbbb.kaleidoscopetavern.block.brew.DrinkBlock;
 import net.xdpp.kaleidoscopetfctavern.Kaleidoscopetfctavern;
 import net.xdpp.kaleidoscopetfctavern.block.plant.BaseWildGrapevineBlock;
 import net.xdpp.kaleidoscopetfctavern.block.plant.BaseWildGrapevinePlantBlock;
@@ -10,6 +11,10 @@ import net.xdpp.kaleidoscopetfctavern.block.plant.GrapeCropBlockGreen;
 import net.xdpp.kaleidoscopetfctavern.block.plant.TFCGrapevineTrellisBlock;
 import net.xdpp.kaleidoscopetfctavern.block.plant.WildGrapevineType;
 import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.Blocks;
+import net.minecraft.world.level.block.LiquidBlock;
+import net.minecraft.world.level.block.state.BlockBehaviour;
+import net.minecraft.world.phys.shapes.Shapes;
 import net.minecraftforge.registries.DeferredRegister;
 import net.minecraftforge.registries.ForgeRegistries;
 import net.minecraftforge.registries.RegistryObject;
@@ -60,6 +65,21 @@ public class ModBlocks {
     public static final RegistryObject<Block> GRAPE_CROP_GREEN;
     public static final RegistryObject<Block> TFC_GRAPEVINE_TRELLIS;
 
+    public static final RegistryObject<LiquidBlock> PURPLE_GRAPE_JUICE_BLOCK;
+    public static final RegistryObject<LiquidBlock> RED_GRAPE_JUICE_BLOCK;
+    public static final RegistryObject<LiquidBlock> WHITE_GRAPE_JUICE_BLOCK;
+    public static final RegistryObject<LiquidBlock> GREEN_GRAPE_JUICE_BLOCK;
+
+    public static final RegistryObject<Block> PURPLE_WINE;
+    public static final RegistryObject<Block> RED_WINE;
+    public static final RegistryObject<Block> WHITE_WINE;
+    public static final RegistryObject<Block> ICE_PURPLE_WINE;
+    public static final RegistryObject<Block> ICE_RED_WINE;
+    public static final RegistryObject<Block> ICE_WHITE_WINE;
+    public static final RegistryObject<Block> FLOWER_PURPLE_WINE;
+    public static final RegistryObject<Block> FLOWER_RED_WINE;
+    public static final RegistryObject<Block> FLOWER_WHITE_WINE;
+
     static {
         BlockHolder holderPurple = new BlockHolder();
         WILD_GRAPEVINE_PURPLE = BLOCKS.register("wild_grapevine_purple",
@@ -98,6 +118,101 @@ public class ModBlocks {
         GRAPE_CROP_WHITE = BLOCKS.register("grape_crop_white", GrapeCropBlockWhite::new);
         GRAPE_CROP_GREEN = BLOCKS.register("grape_crop_green", GrapeCropBlockGreen::new);
         TFC_GRAPEVINE_TRELLIS = BLOCKS.register("tfc_grapevine_trellis", TFCGrapevineTrellisBlock::new);
+
+        PURPLE_GRAPE_JUICE_BLOCK = BLOCKS.register("purple_grape_juice", () -> new LiquidBlock(() -> (net.minecraft.world.level.material.FlowingFluid) ModFluids.PURPLE_GRAPE_JUICE.get(), BlockBehaviour.Properties.copy(Blocks.WATER).noLootTable()));
+        RED_GRAPE_JUICE_BLOCK = BLOCKS.register("red_grape_juice", () -> new LiquidBlock(() -> (net.minecraft.world.level.material.FlowingFluid) ModFluids.RED_GRAPE_JUICE.get(), BlockBehaviour.Properties.copy(Blocks.WATER).noLootTable()));
+        WHITE_GRAPE_JUICE_BLOCK = BLOCKS.register("white_grape_juice", () -> new LiquidBlock(() -> (net.minecraft.world.level.material.FlowingFluid) ModFluids.WHITE_GRAPE_JUICE.get(), BlockBehaviour.Properties.copy(Blocks.WATER).noLootTable()));
+        GREEN_GRAPE_JUICE_BLOCK = BLOCKS.register("green_grape_juice", () -> new LiquidBlock(() -> (net.minecraft.world.level.material.FlowingFluid) ModFluids.GREEN_GRAPE_JUICE.get(), BlockBehaviour.Properties.copy(Blocks.WATER).noLootTable()));
+
+        PURPLE_WINE = BLOCKS.register("purple_wine", DrinkBlock.create().maxCount(4).shapes(
+                Block.box(6, 0, 6, 10, 16, 10),
+                Block.box(2, 0, 6, 14, 16, 10),
+                Shapes.or(
+                        Block.box(2, 0, 10, 14, 16, 14),
+                        Block.box(6, 0, 2, 10, 16, 14)
+                ),
+                Block.box(2, 0, 2, 14, 16, 14)
+        ).build());
+
+        RED_WINE = BLOCKS.register("red_wine", DrinkBlock.create().maxCount(4).shapes(
+                Block.box(6, 0, 6, 10, 16, 10),
+                Block.box(2, 0, 6, 14, 16, 10),
+                Shapes.or(
+                        Block.box(2, 0, 10, 14, 16, 14),
+                        Block.box(6, 0, 2, 10, 16, 14)
+                ),
+                Block.box(2, 0, 2, 14, 16, 14)
+        ).build());
+
+        WHITE_WINE = BLOCKS.register("white_wine", DrinkBlock.create().maxCount(4).shapes(
+                Block.box(6, 0, 6, 10, 16, 10),
+                Block.box(2, 0, 6, 14, 16, 10),
+                Shapes.or(
+                        Block.box(2, 0, 10, 14, 16, 14),
+                        Block.box(6, 0, 2, 10, 16, 14)
+                ),
+                Block.box(2, 0, 2, 14, 16, 14)
+        ).build());
+
+        ICE_PURPLE_WINE = BLOCKS.register("ice_purple_wine", DrinkBlock.create().maxCount(4).shapes(
+                Block.box(6, 0, 6, 10, 16, 10),
+                Block.box(2, 0, 6, 14, 16, 10),
+                Shapes.or(
+                        Block.box(2, 0, 10, 14, 16, 14),
+                        Block.box(6, 0, 2, 10, 16, 14)
+                ),
+                Block.box(2, 0, 2, 14, 16, 14)
+        ).build());
+
+        ICE_RED_WINE = BLOCKS.register("ice_red_wine", DrinkBlock.create().maxCount(4).shapes(
+                Block.box(6, 0, 6, 10, 16, 10),
+                Block.box(2, 0, 6, 14, 16, 10),
+                Shapes.or(
+                        Block.box(2, 0, 10, 14, 16, 14),
+                        Block.box(6, 0, 2, 10, 16, 14)
+                ),
+                Block.box(2, 0, 2, 14, 16, 14)
+        ).build());
+
+        ICE_WHITE_WINE = BLOCKS.register("ice_white_wine", DrinkBlock.create().maxCount(4).shapes(
+                Block.box(6, 0, 6, 10, 16, 10),
+                Block.box(2, 0, 6, 14, 16, 10),
+                Shapes.or(
+                        Block.box(2, 0, 10, 14, 16, 14),
+                        Block.box(6, 0, 2, 10, 16, 14)
+                ),
+                Block.box(2, 0, 2, 14, 16, 14)
+        ).build());
+
+        FLOWER_PURPLE_WINE = BLOCKS.register("flower_purple_wine", DrinkBlock.create().maxCount(4).shapes(
+                Block.box(6, 0, 6, 10, 16, 10),
+                Block.box(2, 0, 6, 14, 16, 10),
+                Shapes.or(
+                        Block.box(2, 0, 10, 14, 16, 14),
+                        Block.box(6, 0, 2, 10, 16, 14)
+                ),
+                Block.box(2, 0, 2, 14, 16, 14)
+        ).build());
+
+        FLOWER_RED_WINE = BLOCKS.register("flower_red_wine", DrinkBlock.create().maxCount(4).shapes(
+                Block.box(6, 0, 6, 10, 16, 10),
+                Block.box(2, 0, 6, 14, 16, 10),
+                Shapes.or(
+                        Block.box(2, 0, 10, 14, 16, 14),
+                        Block.box(6, 0, 2, 10, 16, 14)
+                ),
+                Block.box(2, 0, 2, 14, 16, 14)
+        ).build());
+
+        FLOWER_WHITE_WINE = BLOCKS.register("flower_white_wine", DrinkBlock.create().maxCount(4).shapes(
+                Block.box(6, 0, 6, 10, 16, 10),
+                Block.box(2, 0, 6, 14, 16, 10),
+                Shapes.or(
+                        Block.box(2, 0, 10, 14, 16, 14),
+                        Block.box(6, 0, 2, 10, 16, 14)
+                ),
+                Block.box(2, 0, 2, 14, 16, 14)
+        ).build());
     }
 
     /**

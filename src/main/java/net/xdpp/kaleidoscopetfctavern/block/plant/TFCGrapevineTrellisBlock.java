@@ -61,6 +61,7 @@ public class TFCGrapevineTrellisBlock extends Block implements SimpleWaterlogged
     public static final IntegerProperty AGE = BlockStateProperties.AGE_3;
     public static final int MAX_AGE = BlockStateProperties.MAX_AGE_3;
     public static final EnumProperty<GrapevineType> GRAPE_TYPE = EnumProperty.create("grape_type", GrapevineType.class);
+    public static final BooleanProperty WITHERED = BooleanProperty.create("withered");
     public static final Direction[] CHECK_DIRECTION = new Direction[]{Direction.UP, Direction.EAST, Direction.WEST, Direction.SOUTH, Direction.NORTH};
 
     public TFCGrapevineTrellisBlock() {
@@ -77,7 +78,8 @@ public class TFCGrapevineTrellisBlock extends Block implements SimpleWaterlogged
                 .setValue(TYPE, TrellisType.SINGLE)
                 .setValue(AGE, 0)
                 .setValue(GRAPE_TYPE, GrapevineType.PURPLE)
-                .setValue(WATERLOGGED, false));
+                .setValue(WATERLOGGED, false)
+                .setValue(WITHERED, false));
     }
     
     /**
@@ -185,7 +187,12 @@ public class TFCGrapevineTrellisBlock extends Block implements SimpleWaterlogged
      */
     @Override
     public void randomTick(BlockState state, ServerLevel level, BlockPos pos, RandomSource random) {
-        if (ForgeHooks.onCropsGrowPre(level, pos, state, random.nextDouble() < KTConfig.GRAPEVINE_GROWTH_CHANCE.get())) {
+        boolean shouldWither = !checkClimateConditions(level, pos, state.getValue(GRAPE_TYPE));
+        if (state.getValue(WITHERED) != shouldWither) {
+            level.setBlockAndUpdate(pos, state.setValue(WITHERED, shouldWither));
+        }
+        
+        if (!shouldWither && ForgeHooks.onCropsGrowPre(level, pos, state, random.nextDouble() < KTConfig.GRAPEVINE_GROWTH_CHANCE.get())) {
             this.doGrow(level, pos, state);
         }
     }
@@ -422,7 +429,7 @@ public class TFCGrapevineTrellisBlock extends Block implements SimpleWaterlogged
      */
     @Override
     protected void createBlockStateDefinition(StateDefinition.Builder<Block, BlockState> builder) {
-        builder.add(TYPE, AGE, GRAPE_TYPE, WATERLOGGED);
+        builder.add(TYPE, AGE, GRAPE_TYPE, WATERLOGGED, WITHERED);
     }
     
     /**

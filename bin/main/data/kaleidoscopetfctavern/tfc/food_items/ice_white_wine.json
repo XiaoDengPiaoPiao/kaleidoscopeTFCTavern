@@ -1,0 +1,9 @@
+{
+  "ingredient": {
+    "item": "kaleidoscopetfctavern:ice_white_wine"
+  },
+  "hunger": 6,
+  "saturation": 0.6,
+  "water": 20,
+  "decay_modifier": 0
+}
