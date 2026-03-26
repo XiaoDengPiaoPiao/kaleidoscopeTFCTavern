@@ -1,6 +1,9 @@
 package net.xdpp.kaleidoscopetfctavern.block.plant;
 
 import com.github.ysbbbbbb.kaleidoscopetavern.block.properties.TrellisType;
+import net.dries007.tfc.util.calendar.Calendars;
+import net.dries007.tfc.util.calendar.Season;
+import net.dries007.tfc.util.climate.Climate;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.server.level.ServerLevel;
@@ -35,6 +38,8 @@ import net.minecraft.world.phys.shapes.VoxelShape;
 import net.minecraftforge.common.ForgeHooks;
 import net.minecraftforge.common.ToolActions;
 import net.xdpp.kaleidoscopetfctavern.config.KTConfig;
+import net.xdpp.kaleidoscopetfctavern.recipe.GrapeClimateRequirementRecipe;
+import net.xdpp.kaleidoscopetfctavern.recipe.ModRecipes;
 
 import java.util.Collections;
 import java.util.List;
@@ -44,7 +49,7 @@ import java.util.function.Supplier;
  * 葡萄作物方块基类
  * <p>
  * 基于 Kaleidoscope Tavern 的 GrapeCropBlock 修改
- * 支持动态设置葡萄物品
+ * 支持动态设置葡萄物品和TFC气候检查
  */
 @SuppressWarnings("deprecation")
 public class BaseGrapeCropBlock extends Block {
@@ -91,6 +96,17 @@ public class BaseGrapeCropBlock extends Block {
                 .setValue(AGE, 0));
         this.grapeItemSupplier = grapeItemSupplier;
     }
+    
+    /**
+     * 获取对应的葡萄物品栈
+     * <p>
+     * 通过供应商获取对应葡萄类型的物品
+     * 
+     * @return 葡萄物品栈
+     */
+    protected ItemStack getGrapeStack() {
+        return grapeItemSupplier.get().getDefaultInstance();
+    }
 
     @Override
     public InteractionResult use(BlockState state, Level level, BlockPos pos, Player player,
@@ -123,12 +139,63 @@ public class BaseGrapeCropBlock extends Block {
         return super.isRandomlyTicking(state) && state.getValue(AGE) < MAX_AGE;
     }
 
+    /**
+     * 随机刻执行
+     * <p>
+     * 检查气候条件，如果不符合则销毁方块
+     * 检查是否能继续存活，如果不能则销毁
+     * 检查是否需要生长
+     * 
+     * @param state 方块状态
+     * @param level 世界
+     * @param pos 方块位置
+     * @param random 随机源
+     */
     @Override
     public void randomTick(BlockState state, ServerLevel level, BlockPos pos, RandomSource random) {
-        if (ForgeHooks.onCropsGrowPre(level, pos, state, random.nextDouble() < KTConfig.GRAPE_CROP_GROWTH_CHANCE.get())) {
-            level.setBlockAndUpdate(pos, state.cycle(AGE));
-            ForgeHooks.onCropsGrowPost(level, pos, state);
+        if (!checkClimateConditions(level, pos)) {
+            level.destroyBlock(pos, false);
+            return;
         }
+
+        if (!this.canSurvive(state, level, pos)) {
+            level.destroyBlock(pos, true);
+            return;
+        }
+
+        if (ForgeHooks.onCropsGrowPre(level, pos, state, random.nextDouble() < KTConfig.GRAPE_CROP_GROWTH_CHANCE.get())) {
+            int age = state.getValue(AGE);
+            if (age < MAX_AGE) {
+                level.setBlockAndUpdate(pos, state.setValue(AGE, age + 1));
+                ForgeHooks.onCropsGrowPost(level, pos, state);
+            }
+        }
+    }
+    
+    /**
+     * 检查气候条件
+     * <p>
+     * 根据配方系统定义的气候条件检查温度、降雨量和季节是否合适
+     * 
+     * @param level 世界
+     * @param pos 方块位置
+     * @return 气候条件是否满足
+     */
+    private boolean checkClimateConditions(Level level, BlockPos pos) {
+        float temperature = Climate.getTemperature(level, pos);
+        float rainfall = Climate.getRainfall(level, pos);
+        Season season = Calendars.get(level).getCalendarMonthOfYear().getSeason();
+        ItemStack grapeStack = getGrapeStack();
+
+        if (level.getRecipeManager() != null) {
+            for (var recipe : level.getRecipeManager().getAllRecipesFor(ModRecipes.GRAPE_CLIMATE_TYPE.get())) {
+                if (recipe.matches(temperature, rainfall, season, grapeStack)) {
+                    return true;
+                }
+            }
+        }
+
+        return false;
     }
 
     @Override
