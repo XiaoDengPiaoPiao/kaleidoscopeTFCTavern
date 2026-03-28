@@ -1,0 +1,19 @@
+{
+    "type": "minecraft:crafting_shaped",
+    "category": "misc",
+    "key": {
+      "a": {
+        "tag": "minecraft:planks"
+      },
+      "b": {
+        "tag": "kaleidoscopetfctavern:grapevine"
+      }
+    },
+    "pattern": [
+      "aa",
+      "bb"
+    ],
+    "result": {
+      "item": "kaleidoscope_tavern:bar_counter"
+    }
+  }

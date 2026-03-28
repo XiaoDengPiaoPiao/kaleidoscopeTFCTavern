@@ -1,0 +1,11 @@
+{
+    "type": "minecraft:crafting_shaped",
+    "category": "misc",
+    "key": {
+      "a": { "item": "minecraft:blue_wool" },
+      "b": { "tag": "forge:rods" },
+      "c": { "tag": "tfc:lumber" }
+    },
+    "pattern": [ "a", "b", "c" ],
+    "result": { "item": "kaleidoscope_tavern:blue_bar_stool" }
+  }

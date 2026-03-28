@@ -1,0 +1,15 @@
+{
+    "type": "tfc:glassworking",
+    "operations": [
+        "blow",
+        "blow",
+        "pinch",
+        "saw"
+    ],
+    "batch": {
+        "item": "tfc:olivine_glass_batch"
+    },
+    "result": {
+        "item": "kaleidoscope_tavern:empty_bottle"
+    }
+}
