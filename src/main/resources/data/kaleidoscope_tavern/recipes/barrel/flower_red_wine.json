@@ -1,0 +1,17 @@
+{
+    "type": "kaleidoscope_tavern:barrel",
+    "carrier": {
+      "item": "kaleidoscope_tavern:empty_bottle"
+    },
+    "fluid": "kaleidoscopetfctavern:red_grape_juice",
+    "ingredients": [
+      {
+        "tag": "minecraft:flowers",
+        "count": 16
+      }
+    ],
+    "result": {
+      "item": "kaleidoscopetfctavern:flower_red_wine"
+    },
+    "unit_time": 2400
+  }
