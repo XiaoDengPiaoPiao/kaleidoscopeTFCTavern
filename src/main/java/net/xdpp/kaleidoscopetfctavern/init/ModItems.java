@@ -4,6 +4,7 @@ import com.github.ysbbbbbb.kaleidoscopetavern.item.JuiceBucketItem;
 import net.xdpp.kaleidoscopetfctavern.Kaleidoscopetfctavern;
 import net.xdpp.kaleidoscopetfctavern.item.CustomDrinkBlockItem;
 import net.xdpp.kaleidoscopetfctavern.item.GrapevineLocatorItem;
+import net.minecraft.world.food.FoodProperties;
 import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.Item;
 import net.minecraftforge.registries.DeferredRegister;
@@ -47,28 +48,39 @@ public interface ModItems {
             () -> new BlockItem(ModBlocks.WILD_GRAPEVINE_GREEN.get(), new Item.Properties()));
 
     /**
+     * 食物属性配置
+     * <p>
+     * 快速食用的水果
+     */
+    static final FoodProperties GRAPE_FOOD_PROPERTIES = new FoodProperties.Builder()
+            .nutrition(4)
+            .saturationMod(0.5f)
+            .fast()
+            .build();
+
+    /**
      * 紫葡萄物品
      */
     RegistryObject<Item> GRAPE_PURPLE = ITEMS.register("grape_purple",
-            () -> new Item(new Item.Properties()));
+            () -> new Item(new Item.Properties().food(GRAPE_FOOD_PROPERTIES)));
     
     /**
      * 红葡萄物品
      */
     RegistryObject<Item> GRAPE_RED = ITEMS.register("grape_red",
-            () -> new Item(new Item.Properties()));
+            () -> new Item(new Item.Properties().food(GRAPE_FOOD_PROPERTIES)));
     
     /**
      * 白葡萄物品
      */
     RegistryObject<Item> GRAPE_WHITE = ITEMS.register("grape_white",
-            () -> new Item(new Item.Properties()));
+            () -> new Item(new Item.Properties().food(GRAPE_FOOD_PROPERTIES)));
     
     /**
      * 绿葡萄物品
      */
     RegistryObject<Item> GRAPE_GREEN = ITEMS.register("grape_green",
-            () -> new Item(new Item.Properties()));
+            () -> new Item(new Item.Properties().food(GRAPE_FOOD_PROPERTIES)));
 
     /**
      * 葡萄藤定位器物品
