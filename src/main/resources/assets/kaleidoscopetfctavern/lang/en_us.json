@@ -47,5 +47,21 @@
   "block.kaleidoscopetfctavern.flower_red_wine": "Flower Red Wine",
   "item.kaleidoscopetfctavern.flower_red_wine": "Flower Red Wine",
   "block.kaleidoscopetfctavern.flower_white_wine": "Flower White Wine",
-  "item.kaleidoscopetfctavern.flower_white_wine": "Flower White Wine"
+  "item.kaleidoscopetfctavern.flower_white_wine": "Flower White Wine",
+    "block.kaleidoscopetfctavern.whiskey": "Whiskey",
+  "item.kaleidoscopetfctavern.whiskey": "Whiskey",
+  "block.kaleidoscopetfctavern.corn_whiskey": "Corn Whiskey",
+  "item.kaleidoscopetfctavern.corn_whiskey": "Corn Whiskey",
+  "block.kaleidoscopetfctavern.rye_whiskey": "Rye Whiskey",
+  "item.kaleidoscopetfctavern.rye_whiskey": "Rye Whiskey",
+  "block.kaleidoscopetfctavern.beer": "Beer",
+  "item.kaleidoscopetfctavern.beer": "Beer",
+  "block.kaleidoscopetfctavern.cider": "Cider",
+  "item.kaleidoscopetfctavern.cider": "Cider",
+  "block.kaleidoscopetfctavern.rum": "Rum",
+  "item.kaleidoscopetfctavern.rum": "Rum",
+  "block.kaleidoscopetfctavern.sake": "Sake",
+  "item.kaleidoscopetfctavern.sake": "Sake",
+  "block.kaleidoscopetfctavern.vodka": "Vodka",
+  "item.kaleidoscopetfctavern.vodka": "Vodka"
 }
