@@ -47,5 +47,21 @@
   "block.kaleidoscopetfctavern.flower_red_wine": "花酿红葡萄酒",
   "item.kaleidoscopetfctavern.flower_red_wine": "花酿红葡萄酒",
   "block.kaleidoscopetfctavern.flower_white_wine": "花酿白葡萄酒",
-  "item.kaleidoscopetfctavern.flower_white_wine": "花酿白葡萄酒"
+  "item.kaleidoscopetfctavern.flower_white_wine": "花酿白葡萄酒",
+  "block.kaleidoscopetfctavern.whiskey": "威士忌",
+  "item.kaleidoscopetfctavern.whiskey": "威士忌",
+  "block.kaleidoscopetfctavern.corn_whiskey": "玉米威士忌",
+  "item.kaleidoscopetfctavern.corn_whiskey": "玉米威士忌",
+  "block.kaleidoscopetfctavern.rye_whiskey": "黑麦威士忌",
+  "item.kaleidoscopetfctavern.rye_whiskey": "黑麦威士忌",
+  "block.kaleidoscopetfctavern.beer": "啤酒",
+  "item.kaleidoscopetfctavern.beer": "啤酒",
+  "block.kaleidoscopetfctavern.cider": "苹果酒",
+  "item.kaleidoscopetfctavern.cider": "苹果酒",
+  "block.kaleidoscopetfctavern.rum": "朗姆酒",
+  "item.kaleidoscopetfctavern.rum": "朗姆酒",
+  "block.kaleidoscopetfctavern.sake": "清酒",
+  "item.kaleidoscopetfctavern.sake": "清酒",
+  "block.kaleidoscopetfctavern.vodka": "伏特加",
+  "item.kaleidoscopetfctavern.vodka": "伏特加"
 }

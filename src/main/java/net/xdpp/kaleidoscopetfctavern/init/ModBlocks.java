@@ -79,6 +79,14 @@ public class ModBlocks {
     public static final RegistryObject<Block> FLOWER_PURPLE_WINE;
     public static final RegistryObject<Block> FLOWER_RED_WINE;
     public static final RegistryObject<Block> FLOWER_WHITE_WINE;
+    public static final RegistryObject<Block> WHISKEY;
+    public static final RegistryObject<Block> CORN_WHISKEY;
+    public static final RegistryObject<Block> RYE_WHISKEY;
+    public static final RegistryObject<Block> BEER;
+    public static final RegistryObject<Block> CIDER;
+    public static final RegistryObject<Block> RUM;
+    public static final RegistryObject<Block> SAKE;
+    public static final RegistryObject<Block> VODKA;
 
     static {
         BlockHolder holderPurple = new BlockHolder();
@@ -205,6 +213,86 @@ public class ModBlocks {
         ).build());
 
         FLOWER_WHITE_WINE = BLOCKS.register("flower_white_wine", DrinkBlock.create().maxCount(4).shapes(
+                Block.box(6, 0, 6, 10, 16, 10),
+                Block.box(2, 0, 6, 14, 16, 10),
+                Shapes.or(
+                        Block.box(2, 0, 10, 14, 16, 14),
+                        Block.box(6, 0, 2, 10, 16, 14)
+                ),
+                Block.box(2, 0, 2, 14, 16, 14)
+        ).build());
+
+        WHISKEY = BLOCKS.register("whiskey", DrinkBlock.create().maxCount(4).shapes(
+                Block.box(6, 0, 6, 10, 16, 10),
+                Block.box(2, 0, 6, 14, 16, 10),
+                Shapes.or(
+                        Block.box(2, 0, 10, 14, 16, 14),
+                        Block.box(6, 0, 2, 10, 16, 14)
+                ),
+                Block.box(2, 0, 2, 14, 16, 14)
+        ).build());
+
+        CORN_WHISKEY = BLOCKS.register("corn_whiskey", DrinkBlock.create().maxCount(4).shapes(
+                Block.box(6, 0, 6, 10, 16, 10),
+                Block.box(2, 0, 6, 14, 16, 10),
+                Shapes.or(
+                        Block.box(2, 0, 10, 14, 16, 14),
+                        Block.box(6, 0, 2, 10, 16, 14)
+                ),
+                Block.box(2, 0, 2, 14, 16, 14)
+        ).build());
+
+        RYE_WHISKEY = BLOCKS.register("rye_whiskey", DrinkBlock.create().maxCount(4).shapes(
+                Block.box(6, 0, 6, 10, 16, 10),
+                Block.box(2, 0, 6, 14, 16, 10),
+                Shapes.or(
+                        Block.box(2, 0, 10, 14, 16, 14),
+                        Block.box(6, 0, 2, 10, 16, 14)
+                ),
+                Block.box(2, 0, 2, 14, 16, 14)
+        ).build());
+
+        BEER = BLOCKS.register("beer", DrinkBlock.create().maxCount(4).shapes(
+                Block.box(6, 0, 6, 10, 16, 10),
+                Block.box(2, 0, 6, 14, 16, 10),
+                Shapes.or(
+                        Block.box(2, 0, 10, 14, 16, 14),
+                        Block.box(6, 0, 2, 10, 16, 14)
+                ),
+                Block.box(2, 0, 2, 14, 16, 14)
+        ).build());
+
+        CIDER = BLOCKS.register("cider", DrinkBlock.create().maxCount(4).shapes(
+                Block.box(6, 0, 6, 10, 16, 10),
+                Block.box(2, 0, 6, 14, 16, 10),
+                Shapes.or(
+                        Block.box(2, 0, 10, 14, 16, 14),
+                        Block.box(6, 0, 2, 10, 16, 14)
+                ),
+                Block.box(2, 0, 2, 14, 16, 14)
+        ).build());
+
+        RUM = BLOCKS.register("rum", DrinkBlock.create().maxCount(4).shapes(
+                Block.box(6, 0, 6, 10, 16, 10),
+                Block.box(2, 0, 6, 14, 16, 10),
+                Shapes.or(
+                        Block.box(2, 0, 10, 14, 16, 14),
+                        Block.box(6, 0, 2, 10, 16, 14)
+                ),
+                Block.box(2, 0, 2, 14, 16, 14)
+        ).build());
+
+        SAKE = BLOCKS.register("sake", DrinkBlock.create().maxCount(4).shapes(
+                Block.box(6, 0, 6, 10, 16, 10),
+                Block.box(2, 0, 6, 14, 16, 10),
+                Shapes.or(
+                        Block.box(2, 0, 10, 14, 16, 14),
+                        Block.box(6, 0, 2, 10, 16, 14)
+                ),
+                Block.box(2, 0, 2, 14, 16, 14)
+        ).build());
+
+        VODKA = BLOCKS.register("vodka", DrinkBlock.create().maxCount(4).shapes(
                 Block.box(6, 0, 6, 10, 16, 10),
                 Block.box(2, 0, 6, 14, 16, 10),
                 Shapes.or(

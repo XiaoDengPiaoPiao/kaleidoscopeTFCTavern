@@ -153,4 +153,52 @@ public interface ModItems {
      */
     RegistryObject<Item> FLOWER_WHITE_WINE = ITEMS.register("flower_white_wine",
             () -> new CustomDrinkBlockItem(ModBlocks.FLOWER_WHITE_WINE.get()));
+
+    /**
+     * 威士忌物品
+     */
+    RegistryObject<Item> WHISKEY = ITEMS.register("whiskey",
+            () -> new CustomDrinkBlockItem(ModBlocks.WHISKEY.get()));
+
+    /**
+     * 玉米威士忌物品
+     */
+    RegistryObject<Item> CORN_WHISKEY = ITEMS.register("corn_whiskey",
+            () -> new CustomDrinkBlockItem(ModBlocks.CORN_WHISKEY.get()));
+
+    /**
+     * 黑麦威士忌物品
+     */
+    RegistryObject<Item> RYE_WHISKEY = ITEMS.register("rye_whiskey",
+            () -> new CustomDrinkBlockItem(ModBlocks.RYE_WHISKEY.get()));
+
+    /**
+     * 啤酒物品
+     */
+    RegistryObject<Item> BEER = ITEMS.register("beer",
+            () -> new CustomDrinkBlockItem(ModBlocks.BEER.get()));
+
+    /**
+     * 苹果酒物品
+     */
+    RegistryObject<Item> CIDER = ITEMS.register("cider",
+            () -> new CustomDrinkBlockItem(ModBlocks.CIDER.get()));
+
+    /**
+     * 朗姆酒物品
+     */
+    RegistryObject<Item> RUM = ITEMS.register("rum",
+            () -> new CustomDrinkBlockItem(ModBlocks.RUM.get()));
+
+    /**
+     * 清酒物品
+     */
+    RegistryObject<Item> SAKE = ITEMS.register("sake",
+            () -> new CustomDrinkBlockItem(ModBlocks.SAKE.get()));
+
+    /**
+     * 伏特加物品
+     */
+    RegistryObject<Item> VODKA = ITEMS.register("vodka",
+            () -> new CustomDrinkBlockItem(ModBlocks.VODKA.get()));
 }

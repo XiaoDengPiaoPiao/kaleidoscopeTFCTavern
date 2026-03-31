@@ -91,6 +91,14 @@ public class Kaleidoscopetfctavern {
                     output.accept(ModItems.FLOWER_PURPLE_WINE.get());
                     output.accept(ModItems.FLOWER_RED_WINE.get());
                     output.accept(ModItems.FLOWER_WHITE_WINE.get());
+                    output.accept(ModItems.WHISKEY.get());
+                    output.accept(ModItems.CORN_WHISKEY.get());
+                    output.accept(ModItems.RYE_WHISKEY.get());
+                    output.accept(ModItems.BEER.get());
+                    output.accept(ModItems.CIDER.get());
+                    output.accept(ModItems.RUM.get());
+                    output.accept(ModItems.SAKE.get());
+                    output.accept(ModItems.VODKA.get());
                 })
                 .build());
     }

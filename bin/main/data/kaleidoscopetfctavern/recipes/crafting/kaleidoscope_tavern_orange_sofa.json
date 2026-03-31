@@ -1,0 +1,20 @@
+{
+    "type": "minecraft:crafting_shaped",
+    "category": "misc",
+    "key": {
+      "a": {
+        "item": "minecraft:orange_wool"
+      },
+      "b": {
+        "tag": "tfc:lumber"
+      }
+    },
+    "pattern": [
+      "a a",
+      "aaa",
+      "b b"
+    ],
+    "result": {
+      "item": "kaleidoscope_tavern:orange_sofa"
+    }
+  }

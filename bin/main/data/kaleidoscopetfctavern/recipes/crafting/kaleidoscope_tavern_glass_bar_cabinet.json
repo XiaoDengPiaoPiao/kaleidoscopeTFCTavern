@@ -1,0 +1,23 @@
+{
+    "type": "minecraft:crafting_shaped",
+    "category": "misc",
+    "key": {
+      "a": {
+        "tag": "kaleidoscopetfctavern:grapevine"
+      },
+      "b": {
+        "tag": "tfc:lumber"
+      },
+      "c": {
+        "tag": "forge:glass_panes"
+      }
+    },
+    "pattern": [
+      "aaa",
+      "bcb",
+      "aaa"
+    ],
+    "result": {
+      "item": "kaleidoscope_tavern:glass_bar_cabinet"
+    }
+  }

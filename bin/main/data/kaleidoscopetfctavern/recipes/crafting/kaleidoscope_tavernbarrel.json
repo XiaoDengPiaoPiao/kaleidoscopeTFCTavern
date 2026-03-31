@@ -1,0 +1,23 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "a": {
+      "tag": "tfc:lumber"
+    },
+    "b": {
+      "tag": "tfc:barrels"
+    },
+    "c": {
+      "tag": "minecraft:logs"
+    }
+  },
+  "pattern": [
+    "aba",
+    "b b",
+    "cbc"
+  ],
+  "result": {
+    "item":"kaleidoscope_tavern:barrel"
+  }
+}

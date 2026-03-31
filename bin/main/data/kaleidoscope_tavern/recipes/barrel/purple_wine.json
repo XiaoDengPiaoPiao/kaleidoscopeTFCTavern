@@ -1,0 +1,12 @@
+{
+    "type": "kaleidoscope_tavern:barrel",
+    "carrier": {
+      "item": "kaleidoscope_tavern:empty_bottle"
+    },
+    "fluid": "kaleidoscopetfctavern:purple_grape_juice",
+    "ingredients": [],
+    "result": {
+      "item": "kaleidoscopetfctavern:purple_wine"
+    },
+    "unit_time": 2400
+  }
