@@ -1,0 +1,11 @@
+{
+    "type": "kaleidoscope_tavern:barrel",
+    "carrier": {
+      "item": "kaleidoscope_tavern:empty_bottle"
+    },
+    "fluid": "tfc:rye_whiskey",
+    "result": {
+      "item": "kaleidoscopetfctavern:rye_whiskey"
+    },
+    "unit_time": 2400
+  }

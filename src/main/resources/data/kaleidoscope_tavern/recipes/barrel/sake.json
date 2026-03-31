@@ -1,0 +1,11 @@
+{
+    "type": "kaleidoscope_tavern:barrel",
+    "carrier": {
+      "item": "kaleidoscope_tavern:empty_bottle"
+    },
+    "fluid": "tfc:sake",
+    "result": {
+      "item": "kaleidoscopetfctavern:sake"
+    },
+    "unit_time": 2400
+  }
