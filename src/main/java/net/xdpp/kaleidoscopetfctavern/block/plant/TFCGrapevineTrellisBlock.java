@@ -2,9 +2,12 @@ package net.xdpp.kaleidoscopetfctavern.block.plant;
 
 import com.github.ysbbbbbb.kaleidoscopetavern.block.properties.TrellisType;
 import com.github.ysbbbbbb.kaleidoscopetavern.block.plant.ITrellis;
+import net.dries007.tfc.common.blocks.soil.HoeOverlayBlock;
 import net.dries007.tfc.util.calendar.Calendars;
 import net.dries007.tfc.util.calendar.Season;
 import net.dries007.tfc.util.climate.Climate;
+import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.MutableComponent;
 import net.xdpp.kaleidoscopetfctavern.block.properties.GrapevineType;
 import net.xdpp.kaleidoscopetfctavern.config.KTConfig;
 import net.xdpp.kaleidoscopetfctavern.init.ModBlocks;
@@ -46,6 +49,8 @@ import net.minecraft.world.phys.shapes.VoxelShape;
 import net.minecraftforge.common.ForgeHooks;
 import net.minecraftforge.common.ToolActions;
 
+import java.util.List;
+
 import static com.github.ysbbbbbb.kaleidoscopetavern.block.plant.ITrellis.axisHasTrellis;
 import static com.github.ysbbbbbb.kaleidoscopetavern.block.plant.ITrellis.updateType;
 
@@ -56,7 +61,7 @@ import static com.github.ysbbbbbb.kaleidoscopetavern.block.plant.ITrellis.update
  * 增加了TFC的气候和季节支持，以及TFC泥土/草方块兼容性
  */
 @SuppressWarnings("deprecation")
-public class TFCGrapevineTrellisBlock extends Block implements SimpleWaterloggedBlock, ITrellis {
+public class TFCGrapevineTrellisBlock extends Block implements SimpleWaterloggedBlock, ITrellis, HoeOverlayBlock {
     public static final BooleanProperty WATERLOGGED = BlockStateProperties.WATERLOGGED;
     public static final IntegerProperty AGE = BlockStateProperties.AGE_3;
     public static final int MAX_AGE = BlockStateProperties.MAX_AGE_3;
@@ -481,5 +486,126 @@ public class TFCGrapevineTrellisBlock extends Block implements SimpleWaterlogged
     @Override
     public FluidState getFluidState(BlockState state) {
         return state.getValue(WATERLOGGED) ? Fluids.WATER.getSource(false) : super.getFluidState(state);
+    }
+
+    /**
+     * 添加锄头查看信息
+     * <p>
+     * 显示葡萄藤架的温度、降水量和季节要求
+     *
+     * @param level 世界
+     * @param pos 位置
+     * @param state 方块状态
+     * @param text 信息列表
+     * @param isDebug 是否调试模式
+     */
+    @Override
+    public void addHoeOverlayInfo(Level level, BlockPos pos, BlockState state, List<Component> text, boolean isDebug) {
+        GrapevineType grapeType = state.getValue(GRAPE_TYPE);
+        ItemStack grapeStack = getGrapeStackForType(grapeType);
+        float currentTemp = Climate.getTemperature(level, pos);
+        float currentRainfall = Climate.getRainfall(level, pos);
+        Season currentSeason = Calendars.get(level).getCalendarMonthOfYear().getSeason();
+
+        GrapeClimateRequirementRecipe recipe = null;
+        if (level.getRecipeManager() != null) {
+            for (var r : level.getRecipeManager().getAllRecipesFor(ModRecipes.GRAPE_CLIMATE_TYPE.get())) {
+                if (r.getGrapeType().test(grapeStack)) {
+                    recipe = r;
+                    break;
+                }
+            }
+        }
+
+        if (recipe == null) {
+            text.add(Component.translatable("kaleidoscopetfctavern.tooltip.grape.no_recipe"));
+            return;
+        }
+
+        float minTemp = recipe.getMinTemperature();
+        float maxTemp = recipe.getMaxTemperature();
+        float minRain = recipe.getMinRainfall();
+        float maxRain = recipe.getMaxRainfall();
+        Season requiredSeason = recipe.getSeason();
+
+        text.add(getTemperatureTooltip(currentTemp, minTemp, maxTemp));
+        text.add(getRainfallTooltip(currentRainfall, minRain, maxRain));
+        text.add(getSeasonTooltip(currentSeason, requiredSeason));
+    }
+
+    /**
+     * 获取温度提示文本
+     *
+     * @param current 当前温度
+     * @param min 最小温度
+     * @param max 最大温度
+     * @return 提示文本
+     */
+    private Component getTemperatureTooltip(float current, float min, float max) {
+        MutableComponent text = Component.translatable("kaleidoscopetfctavern.tooltip.grape.temperature", String.format("%.1f", current));
+        if (current >= min && current <= max) {
+            text.append(Component.translatable("kaleidoscopetfctavern.tooltip.grape.good"));
+        } else if (current < min) {
+            text.append(Component.translatable("kaleidoscopetfctavern.tooltip.grape.too_low", String.format("%.1f", min)));
+        } else {
+            text.append(Component.translatable("kaleidoscopetfctavern.tooltip.grape.too_high", String.format("%.1f", max)));
+        }
+        return text;
+    }
+
+    /**
+     * 获取降水量提示文本
+     *
+     * @param current 当前降水量
+     * @param min 最小降水量
+     * @param max 最大降水量
+     * @return 提示文本
+     */
+    private Component getRainfallTooltip(float current, float min, float max) {
+        MutableComponent text = Component.translatable("kaleidoscopetfctavern.tooltip.grape.rainfall", String.format("%.0f", current));
+        if (current >= min && current <= max) {
+            text.append(Component.translatable("kaleidoscopetfctavern.tooltip.grape.good"));
+        } else if (current < min) {
+            text.append(Component.translatable("kaleidoscopetfctavern.tooltip.grape.too_low", String.format("%.0f", min)));
+        } else {
+            text.append(Component.translatable("kaleidoscopetfctavern.tooltip.grape.too_high", String.format("%.0f", max)));
+        }
+        return text;
+    }
+
+    /**
+     * 获取季节提示文本
+     *
+     * @param current 当前季节
+     * @param required 要求季节
+     * @return 提示文本
+     */
+    private Component getSeasonTooltip(Season current, Season required) {
+        MutableComponent text = Component.translatable("kaleidoscopetfctavern.tooltip.grape.season", getSeasonName(current));
+        if (current == required) {
+            text.append(Component.translatable("kaleidoscopetfctavern.tooltip.grape.suitable", getSeasonName(required)));
+        } else {
+            text.append(Component.translatable("kaleidoscopetfctavern.tooltip.grape.not_suitable", getSeasonName(required)));
+        }
+        return text;
+    }
+
+    /**
+     * 获取季节名称
+     *
+     * @param season 季节
+     * @return 季节名称
+     */
+    private Component getSeasonName(Season season) {
+        if (season == Season.SPRING) {
+            return Component.translatable("kaleidoscopetfctavern.season.spring");
+        } else if (season == Season.SUMMER) {
+            return Component.translatable("kaleidoscopetfctavern.season.summer");
+        } else if (season == Season.FALL) {
+            return Component.translatable("kaleidoscopetfctavern.season.fall");
+        } else if (season == Season.WINTER) {
+            return Component.translatable("kaleidoscopetfctavern.season.winter");
+        }
+        return Component.empty();
     }
 }

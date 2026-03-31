@@ -63,5 +63,18 @@
   "block.kaleidoscopetfctavern.sake": "Sake",
   "item.kaleidoscopetfctavern.sake": "Sake",
   "block.kaleidoscopetfctavern.vodka": "Vodka",
-  "item.kaleidoscopetfctavern.vodka": "Vodka"
+  "item.kaleidoscopetfctavern.vodka": "Vodka",
+  "kaleidoscopetfctavern.tooltip.grape.no_recipe": "No climate requirement recipe found",
+  "kaleidoscopetfctavern.tooltip.grape.temperature": "§4Temperature: §r%s°C - ",
+  "kaleidoscopetfctavern.tooltip.grape.rainfall": "§1Rainfall: §r%smm - ",
+  "kaleidoscopetfctavern.tooltip.grape.season": "§aSeason: §r%s - ",
+  "kaleidoscopetfctavern.tooltip.grape.good": "§2Good§r",
+  "kaleidoscopetfctavern.tooltip.grape.too_low": " §4Too low!§r( >%s)",
+  "kaleidoscopetfctavern.tooltip.grape.too_high": "§4Too high!§r( <%s)",
+  "kaleidoscopetfctavern.tooltip.grape.suitable": "§2Suitable§r (%s)",
+  "kaleidoscopetfctavern.tooltip.grape.not_suitable": "§4Not suitable§r (%s)",
+  "kaleidoscopetfctavern.season.spring": "Spring",
+  "kaleidoscopetfctavern.season.summer": "Summer",
+  "kaleidoscopetfctavern.season.fall": "Fall",
+  "kaleidoscopetfctavern.season.winter": "Winter"
 }
