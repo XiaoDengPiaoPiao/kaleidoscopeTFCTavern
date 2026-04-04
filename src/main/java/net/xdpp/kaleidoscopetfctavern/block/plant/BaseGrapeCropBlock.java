@@ -156,19 +156,16 @@ public class BaseGrapeCropBlock extends Block implements HoeOverlayBlock {
      */
     @Override
     public void randomTick(BlockState state, ServerLevel level, BlockPos pos, RandomSource random) {
-        if (!checkClimateConditions(level, pos)) {
-            level.destroyBlock(pos, false);
-            return;
-        }
-
         if (!this.canSurvive(state, level, pos)) {
             level.destroyBlock(pos, true);
             return;
         }
 
+        int age = state.getValue(AGE);
+        boolean canGrowToMax = checkClimateConditions(level, pos);
+        
         if (ForgeHooks.onCropsGrowPre(level, pos, state, random.nextDouble() < KTConfig.GRAPE_CROP_GROWTH_CHANCE.get())) {
-            int age = state.getValue(AGE);
-            if (age < MAX_AGE) {
+            if (age < MAX_AGE && (age < MAX_AGE - 1 || canGrowToMax)) {
                 level.setBlockAndUpdate(pos, state.setValue(AGE, age + 1));
                 ForgeHooks.onCropsGrowPost(level, pos, state);
             }

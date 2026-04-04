@@ -192,9 +192,18 @@ public class TFCGrapevineTrellisBlock extends Block implements SimpleWaterlogged
      */
     @Override
     public void randomTick(BlockState state, ServerLevel level, BlockPos pos, RandomSource random) {
-        boolean shouldWither = !checkClimateConditions(level, pos, state.getValue(GRAPE_TYPE));
+        Season season = Calendars.get(level).getCalendarMonthOfYear().getSeason();
+        boolean climateSuitable = checkClimateConditions(level, pos, state.getValue(GRAPE_TYPE));
+        boolean shouldWither = season == Season.WINTER || !climateSuitable;
         if (state.getValue(WITHERED) != shouldWither) {
             level.setBlockAndUpdate(pos, state.setValue(WITHERED, shouldWither));
+            if (shouldWither) {
+                BlockPos cropPos = pos.below();
+                BlockState cropState = level.getBlockState(cropPos);
+                if (cropState.getBlock() instanceof BaseGrapeCropBlock) {
+                    level.destroyBlock(cropPos, false);
+                }
+            }
         }
         
         if (!shouldWither && ForgeHooks.onCropsGrowPre(level, pos, state, random.nextDouble() < KTConfig.GRAPEVINE_GROWTH_CHANCE.get())) {
