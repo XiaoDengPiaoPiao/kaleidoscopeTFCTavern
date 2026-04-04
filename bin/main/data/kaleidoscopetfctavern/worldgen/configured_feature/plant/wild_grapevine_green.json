@@ -3,9 +3,9 @@
   "config": {
     "body": "kaleidoscopetfctavern:wild_grapevine_plant_green",
     "head": "kaleidoscopetfctavern:wild_grapevine_green",
-    "tries": 90,
+    "tries": 30,
     "radius": 10,
     "min_height": 3,
-    "max_height": 7
+    "max_height": 5
   }
 }
