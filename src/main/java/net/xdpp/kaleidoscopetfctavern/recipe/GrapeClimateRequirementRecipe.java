@@ -72,6 +72,12 @@ public class GrapeClimateRequirementRecipe implements Recipe<net.minecraft.world
                 && season == currentSeason;
     }
 
+    public boolean matchesClimateOnly(float temperature, float rainfall, ItemStack grapeStack) {
+        return grapeType.test(grapeStack)
+                && temperature >= minTemperature && temperature <= maxTemperature
+                && rainfall >= minRainfall && rainfall <= maxRainfall;
+    }
+
     @Override
     public boolean matches(net.minecraft.world.inventory.CraftingContainer container, Level level) {
         return false;

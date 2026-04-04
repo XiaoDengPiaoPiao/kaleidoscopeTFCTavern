@@ -193,7 +193,7 @@ public class TFCGrapevineTrellisBlock extends Block implements SimpleWaterlogged
     @Override
     public void randomTick(BlockState state, ServerLevel level, BlockPos pos, RandomSource random) {
         Season season = Calendars.get(level).getCalendarMonthOfYear().getSeason();
-        boolean climateSuitable = checkClimateConditions(level, pos, state.getValue(GRAPE_TYPE));
+        boolean climateSuitable = checkClimateConditionsOnly(level, pos, state.getValue(GRAPE_TYPE));
         boolean shouldWither = season == Season.WINTER || !climateSuitable;
         if (state.getValue(WITHERED) != shouldWither) {
             level.setBlockAndUpdate(pos, state.setValue(WITHERED, shouldWither));
@@ -412,14 +412,40 @@ public class TFCGrapevineTrellisBlock extends Block implements SimpleWaterlogged
     }
     
     /**
-     * 检查气候条件
+     * 检查气候条件（仅温度和降水，不检查季节）
+     * <p>
+     * 根据配方系统定义的气候条件检查温度、降雨量是否合适
+     * 
+     * @param level 世界
+     * @param pos 方块位置
+     * @param grapeType 葡萄藤类型
+     * @return 温度和降水条件是否满足
+     */
+    private boolean checkClimateConditionsOnly(Level level, BlockPos pos, GrapevineType grapeType) {
+        float temperature = Climate.getTemperature(level, pos);
+        float rainfall = Climate.getRainfall(level, pos);
+        ItemStack grapeStack = getGrapeStackForType(grapeType);
+
+        if (level.getRecipeManager() != null) {
+            for (var recipe : level.getRecipeManager().getAllRecipesFor(ModRecipes.GRAPE_CLIMATE_TYPE.get())) {
+                if (recipe.matchesClimateOnly(temperature, rainfall, grapeStack)) {
+                    return true;
+                }
+            }
+        }
+
+        return false;
+    }
+
+    /**
+     * 检查完整气候条件（温度、降水和季节）
      * <p>
      * 根据配方系统定义的气候条件检查温度、降雨量和季节是否合适
      * 
      * @param level 世界
      * @param pos 方块位置
      * @param grapeType 葡萄藤类型
-     * @return 气候条件是否满足
+     * @return 完整气候条件是否满足
      */
     private boolean checkClimateConditions(Level level, BlockPos pos, GrapevineType grapeType) {
         float temperature = Climate.getTemperature(level, pos);
