@@ -43,6 +43,7 @@ import net.minecraftforge.common.ToolActions;
 import net.xdpp.kaleidoscopetfctavern.config.KTConfig;
 import net.xdpp.kaleidoscopetfctavern.recipe.GrapeClimateRequirementRecipe;
 import net.xdpp.kaleidoscopetfctavern.recipe.ModRecipes;
+import net.xdpp.kaleidoscopetfctavern.util.GrapeClimateHelper;
 
 import java.util.Collections;
 import java.util.List;
@@ -162,7 +163,8 @@ public class BaseGrapeCropBlock extends Block implements HoeOverlayBlock {
         }
 
         int age = state.getValue(AGE);
-        boolean canGrowToMax = checkClimateConditions(level, pos);
+        final GrapeClimateHelper.ClimateContext climate = GrapeClimateHelper.capture(level, pos);
+        final boolean canGrowToMax = GrapeClimateHelper.matches(level, climate, getGrapeStack());
         
         if (ForgeHooks.onCropsGrowPre(level, pos, state, random.nextDouble() < KTConfig.GRAPE_CROP_GROWTH_CHANCE.get())) {
             if (age < MAX_AGE && (age < MAX_AGE - 1 || canGrowToMax)) {
@@ -182,20 +184,7 @@ public class BaseGrapeCropBlock extends Block implements HoeOverlayBlock {
      * @return 气候条件是否满足
      */
     private boolean checkClimateConditions(Level level, BlockPos pos) {
-        float temperature = Climate.getTemperature(level, pos);
-        float rainfall = Climate.getRainfall(level, pos);
-        Season season = Calendars.get(level).getCalendarMonthOfYear().getSeason();
-        ItemStack grapeStack = getGrapeStack();
-
-        if (level.getRecipeManager() != null) {
-            for (var recipe : level.getRecipeManager().getAllRecipesFor(ModRecipes.GRAPE_CLIMATE_TYPE.get())) {
-                if (recipe.matches(temperature, rainfall, season, grapeStack)) {
-                    return true;
-                }
-            }
-        }
-
-        return false;
+        return GrapeClimateHelper.matches(level, GrapeClimateHelper.capture(level, pos), getGrapeStack());
     }
 
     @Override
@@ -211,6 +200,9 @@ public class BaseGrapeCropBlock extends Block implements HoeOverlayBlock {
     public boolean canSurvive(BlockState state, LevelReader level, BlockPos pos) {
         var aboveState = level.getBlockState(pos.above());
         if (aboveState.getBlock() instanceof com.github.ysbbbbbb.kaleidoscopetavern.block.plant.GrapevineTrellisBlock trellis) {
+            return trellis.isMaxAge(aboveState);
+        }
+        if (aboveState.getBlock() instanceof TFCGrapevineTrellisBlock trellis) {
             return trellis.isMaxAge(aboveState);
         }
         return false;
@@ -256,35 +248,7 @@ public class BaseGrapeCropBlock extends Block implements HoeOverlayBlock {
      */
     @Override
     public void addHoeOverlayInfo(Level level, BlockPos pos, BlockState state, List<Component> text, boolean isDebug) {
-        ItemStack grapeStack = getGrapeStack();
-        float currentTemp = Climate.getTemperature(level, pos);
-        float currentRainfall = Climate.getRainfall(level, pos);
-        Season currentSeason = Calendars.get(level).getCalendarMonthOfYear().getSeason();
-
-        GrapeClimateRequirementRecipe recipe = null;
-        if (level.getRecipeManager() != null) {
-            for (var r : level.getRecipeManager().getAllRecipesFor(ModRecipes.GRAPE_CLIMATE_TYPE.get())) {
-                if (r.getGrapeType().test(grapeStack)) {
-                    recipe = r;
-                    break;
-                }
-            }
-        }
-
-        if (recipe == null) {
-            text.add(Component.translatable("kaleidoscopetfctavern.tooltip.grape.no_recipe"));
-            return;
-        }
-
-        float minTemp = recipe.getMinTemperature();
-        float maxTemp = recipe.getMaxTemperature();
-        float minRain = recipe.getMinRainfall();
-        float maxRain = recipe.getMaxRainfall();
-        Season requiredSeason = recipe.getSeason();
-
-        text.add(getTemperatureTooltip(currentTemp, minTemp, maxTemp));
-        text.add(getRainfallTooltip(currentRainfall, minRain, maxRain));
-        text.add(getSeasonTooltip(currentSeason, requiredSeason));
+        GrapeClimateHelper.addTooltip(level, pos, getGrapeStack(), text);
     }
 
     /**

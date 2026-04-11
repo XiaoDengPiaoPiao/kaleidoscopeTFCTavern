@@ -14,6 +14,7 @@ import net.xdpp.kaleidoscopetfctavern.init.ModBlocks;
 import net.xdpp.kaleidoscopetfctavern.init.ModItems;
 import net.xdpp.kaleidoscopetfctavern.recipe.GrapeClimateRequirementRecipe;
 import net.xdpp.kaleidoscopetfctavern.recipe.ModRecipes;
+import net.xdpp.kaleidoscopetfctavern.util.GrapeClimateHelper;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.server.level.ServerLevel;
@@ -192,9 +193,10 @@ public class TFCGrapevineTrellisBlock extends Block implements SimpleWaterlogged
      */
     @Override
     public void randomTick(BlockState state, ServerLevel level, BlockPos pos, RandomSource random) {
-        Season season = Calendars.get(level).getCalendarMonthOfYear().getSeason();
-        boolean climateSuitable = checkClimateConditionsOnly(level, pos, state.getValue(GRAPE_TYPE));
-        boolean shouldWither = season == Season.WINTER || !climateSuitable;
+        final ItemStack grapeStack = GrapeClimateHelper.getGrapeStackForType(state.getValue(GRAPE_TYPE));
+        final GrapeClimateHelper.ClimateContext climate = GrapeClimateHelper.capture(level, pos);
+        final boolean climateSuitable = GrapeClimateHelper.matchesClimateOnly(level, climate, grapeStack);
+        final boolean shouldWither = (!climate.greenhouseControlled() && climate.season() == Season.WINTER) || !climateSuitable;
         if (state.getValue(WITHERED) != shouldWither) {
             level.setBlockAndUpdate(pos, state.setValue(WITHERED, shouldWither));
             if (shouldWither) {
@@ -343,6 +345,7 @@ public class TFCGrapevineTrellisBlock extends Block implements SimpleWaterlogged
      */
     public void doGrow(Level level, BlockPos pos, BlockState state) {
         var grapeType = state.getValue(GRAPE_TYPE);
+        final ItemStack grapeStack = GrapeClimateHelper.getGrapeStackForType(grapeType);
         
         if (state.getValue(TYPE) == TrellisType.SINGLE) {
             BlockState belowState = level.getBlockState(pos.below());
@@ -368,7 +371,7 @@ public class TFCGrapevineTrellisBlock extends Block implements SimpleWaterlogged
                 }
             }
 
-            if (canGrowGrape(level, pos) && checkClimateConditions(level, pos, grapeType)) {
+            if (canGrowGrape(level, pos) && GrapeClimateHelper.matches(level, pos, grapeStack)) {
                 Block cropBlock;
                 switch (grapeType) {
                     case PURPLE:
@@ -422,19 +425,7 @@ public class TFCGrapevineTrellisBlock extends Block implements SimpleWaterlogged
      * @return 温度和降水条件是否满足
      */
     private boolean checkClimateConditionsOnly(Level level, BlockPos pos, GrapevineType grapeType) {
-        float temperature = Climate.getTemperature(level, pos);
-        float rainfall = Climate.getRainfall(level, pos);
-        ItemStack grapeStack = getGrapeStackForType(grapeType);
-
-        if (level.getRecipeManager() != null) {
-            for (var recipe : level.getRecipeManager().getAllRecipesFor(ModRecipes.GRAPE_CLIMATE_TYPE.get())) {
-                if (recipe.matchesClimateOnly(temperature, rainfall, grapeStack)) {
-                    return true;
-                }
-            }
-        }
-
-        return false;
+        return GrapeClimateHelper.matchesClimateOnly(level, GrapeClimateHelper.capture(level, pos), GrapeClimateHelper.getGrapeStackForType(grapeType));
     }
 
     /**
@@ -448,20 +439,7 @@ public class TFCGrapevineTrellisBlock extends Block implements SimpleWaterlogged
      * @return 完整气候条件是否满足
      */
     private boolean checkClimateConditions(Level level, BlockPos pos, GrapevineType grapeType) {
-        float temperature = Climate.getTemperature(level, pos);
-        float rainfall = Climate.getRainfall(level, pos);
-        Season season = Calendars.get(level).getCalendarMonthOfYear().getSeason();
-        ItemStack grapeStack = getGrapeStackForType(grapeType);
-
-        if (level.getRecipeManager() != null) {
-            for (var recipe : level.getRecipeManager().getAllRecipesFor(ModRecipes.GRAPE_CLIMATE_TYPE.get())) {
-                if (recipe.matches(temperature, rainfall, season, grapeStack)) {
-                    return true;
-                }
-            }
-        }
-
-        return false;
+        return GrapeClimateHelper.matches(level, GrapeClimateHelper.capture(level, pos), GrapeClimateHelper.getGrapeStackForType(grapeType));
     }
     
     /**
@@ -536,36 +514,7 @@ public class TFCGrapevineTrellisBlock extends Block implements SimpleWaterlogged
      */
     @Override
     public void addHoeOverlayInfo(Level level, BlockPos pos, BlockState state, List<Component> text, boolean isDebug) {
-        GrapevineType grapeType = state.getValue(GRAPE_TYPE);
-        ItemStack grapeStack = getGrapeStackForType(grapeType);
-        float currentTemp = Climate.getTemperature(level, pos);
-        float currentRainfall = Climate.getRainfall(level, pos);
-        Season currentSeason = Calendars.get(level).getCalendarMonthOfYear().getSeason();
-
-        GrapeClimateRequirementRecipe recipe = null;
-        if (level.getRecipeManager() != null) {
-            for (var r : level.getRecipeManager().getAllRecipesFor(ModRecipes.GRAPE_CLIMATE_TYPE.get())) {
-                if (r.getGrapeType().test(grapeStack)) {
-                    recipe = r;
-                    break;
-                }
-            }
-        }
-
-        if (recipe == null) {
-            text.add(Component.translatable("kaleidoscopetfctavern.tooltip.grape.no_recipe"));
-            return;
-        }
-
-        float minTemp = recipe.getMinTemperature();
-        float maxTemp = recipe.getMaxTemperature();
-        float minRain = recipe.getMinRainfall();
-        float maxRain = recipe.getMaxRainfall();
-        Season requiredSeason = recipe.getSeason();
-
-        text.add(getTemperatureTooltip(currentTemp, minTemp, maxTemp));
-        text.add(getRainfallTooltip(currentRainfall, minRain, maxRain));
-        text.add(getSeasonTooltip(currentSeason, requiredSeason));
+        GrapeClimateHelper.addTooltip(level, pos, GrapeClimateHelper.getGrapeStackForType(state.getValue(GRAPE_TYPE)), text);
     }
 
     /**

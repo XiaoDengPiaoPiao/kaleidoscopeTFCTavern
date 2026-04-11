@@ -7,6 +7,7 @@ import net.minecraft.core.RegistryAccess;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.GsonHelper;
+import net.minecraft.util.Mth;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.item.crafting.Recipe;
@@ -15,8 +16,6 @@ import net.minecraft.world.item.crafting.RecipeType;
 import net.minecraft.world.level.Level;
 import net.dries007.tfc.util.calendar.Season;
 import org.jetbrains.annotations.Nullable;
-
-import java.util.Optional;
 
 public class GrapeClimateRequirementRecipe implements Recipe<net.minecraft.world.inventory.CraftingContainer> {
 
@@ -61,21 +60,33 @@ public class GrapeClimateRequirementRecipe implements Recipe<net.minecraft.world
         return maxRainfall;
     }
 
+    public int getMinHumidity() {
+        return rainfallToHumidity(minRainfall);
+    }
+
+    public int getMaxHumidity() {
+        return rainfallToHumidity(maxRainfall);
+    }
+
     public Season getSeason() {
         return season;
     }
 
-    public boolean matches(float temperature, float rainfall, Season currentSeason, ItemStack grapeStack) {
+    public boolean matches(float temperature, int humidity, Season currentSeason, boolean ignoreSeason, ItemStack grapeStack) {
         return grapeType.test(grapeStack)
                 && temperature >= minTemperature && temperature <= maxTemperature
-                && rainfall >= minRainfall && rainfall <= maxRainfall
-                && season == currentSeason;
+                && humidity >= getMinHumidity() && humidity <= getMaxHumidity()
+                && (ignoreSeason || season == currentSeason);
     }
 
-    public boolean matchesClimateOnly(float temperature, float rainfall, ItemStack grapeStack) {
+    public boolean matchesClimateOnly(float temperature, int humidity, ItemStack grapeStack) {
         return grapeType.test(grapeStack)
                 && temperature >= minTemperature && temperature <= maxTemperature
-                && rainfall >= minRainfall && rainfall <= maxRainfall;
+                && humidity >= getMinHumidity() && humidity <= getMaxHumidity();
+    }
+
+    private static int rainfallToHumidity(float rainfall) {
+        return Mth.clamp(Math.round(rainfall / 5f), 0, 100);
     }
 
     @Override
