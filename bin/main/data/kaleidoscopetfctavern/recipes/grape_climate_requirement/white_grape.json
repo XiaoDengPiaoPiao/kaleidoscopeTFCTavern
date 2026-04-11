@@ -5,7 +5,8 @@
   },
   "min_temperature": 12.0,
   "max_temperature": 26.0,
-  "min_rainfall": 420.0,
-  "max_rainfall": 500.0,
+  "min_humidity": 60,
+  "max_humidity": 100,
   "season": "fall"
 }
+

@@ -105,27 +105,33 @@ public final class GrapeClimateHelper {
     }
 
     public static int getHumidity(Level level, BlockPos pos) {
-        final int climateHumidity = toHumidity(Climate.getRainfall(level, pos));
-        final int localHumidity = FarmlandBlock.getHydration(level, findHydrationSourcePos(level, pos));
-        return Math.max(climateHumidity, localHumidity);
+        final HydrationResult result = findHydrationSourceAndHeight(level, pos);
+        final int baseHumidity = FarmlandBlock.getHydration(level, result.sourcePos());
+        final int heightDiff = result.heightDiff();
+        
+        if (heightDiff > 4) {
+            final int humidityDrop = (heightDiff - 4) * 15;
+            return Mth.clamp(baseHumidity - humidityDrop, 0, 100);
+        }
+        return baseHumidity;
     }
 
-    private static BlockPos findHydrationSourcePos(Level level, BlockPos pos) {
+    private record HydrationResult(BlockPos sourcePos, int heightDiff) {}
+
+    private static HydrationResult findHydrationSourceAndHeight(Level level, BlockPos pos) {
         final BlockPos.MutableBlockPos cursor = pos.mutable();
+        int heightDiff = 0;
         while (cursor.getY() > level.getMinBuildHeight()) {
             final BlockState state = level.getBlockState(cursor);
             if (!state.isAir()
                     && !(state.getBlock() instanceof TFCGrapevineTrellisBlock)
                     && !(state.getBlock() instanceof BaseGrapeCropBlock)) {
-                return cursor.immutable();
+                return new HydrationResult(cursor.immutable(), heightDiff);
             }
             cursor.move(Direction.DOWN);
+            heightDiff++;
         }
-        return pos;
-    }
-
-    private static int toHumidity(float rainfall) {
-        return Mth.clamp(Math.round(rainfall / 5f), 0, 100);
+        return new HydrationResult(pos, 0);
     }
 
     private static Component getTemperatureTooltip(float current, float min, float max) {
