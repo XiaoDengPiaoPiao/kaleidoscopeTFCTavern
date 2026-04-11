@@ -79,5 +79,6 @@
   "kaleidoscopetfctavern.season.spring": "Spring",
   "kaleidoscopetfctavern.season.summer": "Summer",
   "kaleidoscopetfctavern.season.fall": "Fall",
-  "kaleidoscopetfctavern.season.winter": "Winter"
+  "kaleidoscopetfctavern.season.winter": "Winter",
+  "config.jade.plugin_kaleidoscopetfctavern.grape_climate": "Grape Climate Information"
 }

@@ -79,5 +79,6 @@
   "kaleidoscopetfctavern.season.spring": "春天",
   "kaleidoscopetfctavern.season.summer": "夏天",
   "kaleidoscopetfctavern.season.fall": "秋天",
-  "kaleidoscopetfctavern.season.winter": "冬天"
+  "kaleidoscopetfctavern.season.winter": "冬天",
+  "config.jade.plugin_kaleidoscopetfctavern.grape_climate": "葡萄气候信息"
 }

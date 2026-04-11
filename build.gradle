@@ -144,7 +144,7 @@ dependencies {
     annotationProcessor 'org.spongepowered:mixin:0.8.5:processor'
 
     // patchouli
-    runtimeOnly fg.deobf("curse.maven:patchouli-306770:4966125")
+    implementation fg.deobf("curse.maven:patchouli-306770:4966125")
     // tfc
     implementation fg.deobf("curse.maven:terrafirmacraft-302973:7730077")
     // jei
@@ -156,9 +156,13 @@ dependencies {
     implementation fg.deobf("curse.maven:jei-copy-recipe-json-1375689:7364314")
     implementation fg.deobf("curse.maven:kubejs-238086:5853326")
 
+    
 
     implementation fg.deobf("curse.maven:architectury-api-419699:5137938")
     implementation fg.deobf("curse.maven:rhino-416294:6186971")
+    // Firmalife
+    implementation fg.deobf("curse.maven:firmalife-453394:7602336")
+    
 }
 
 // This block of code expands all declared replace properties in the specified resource targets.

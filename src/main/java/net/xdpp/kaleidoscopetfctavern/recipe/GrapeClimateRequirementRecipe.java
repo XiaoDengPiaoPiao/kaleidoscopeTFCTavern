@@ -23,20 +23,20 @@ public class GrapeClimateRequirementRecipe implements Recipe<net.minecraft.world
     private final Ingredient grapeType;
     private final float minTemperature;
     private final float maxTemperature;
-    private final float minRainfall;
-    private final float maxRainfall;
+    private final int minHumidity;
+    private final int maxHumidity;
     private final Season season;
 
     public GrapeClimateRequirementRecipe(ResourceLocation id, Ingredient grapeType, 
                                          float minTemperature, float maxTemperature, 
-                                         float minRainfall, float maxRainfall, 
+                                         int minHumidity, int maxHumidity, 
                                          Season season) {
         this.id = id;
         this.grapeType = grapeType;
         this.minTemperature = minTemperature;
         this.maxTemperature = maxTemperature;
-        this.minRainfall = minRainfall;
-        this.maxRainfall = maxRainfall;
+        this.minHumidity = minHumidity;
+        this.maxHumidity = maxHumidity;
         this.season = season;
     }
 
@@ -52,20 +52,12 @@ public class GrapeClimateRequirementRecipe implements Recipe<net.minecraft.world
         return maxTemperature;
     }
 
-    public float getMinRainfall() {
-        return minRainfall;
-    }
-
-    public float getMaxRainfall() {
-        return maxRainfall;
-    }
-
     public int getMinHumidity() {
-        return rainfallToHumidity(minRainfall);
+        return minHumidity;
     }
 
     public int getMaxHumidity() {
-        return rainfallToHumidity(maxRainfall);
+        return maxHumidity;
     }
 
     public Season getSeason() {
@@ -83,10 +75,6 @@ public class GrapeClimateRequirementRecipe implements Recipe<net.minecraft.world
         return grapeType.test(grapeStack)
                 && temperature >= minTemperature && temperature <= maxTemperature
                 && humidity >= getMinHumidity() && humidity <= getMaxHumidity();
-    }
-
-    private static int rainfallToHumidity(float rainfall) {
-        return Mth.clamp(Math.round(rainfall / 5f), 0, 100);
     }
 
     @Override
@@ -131,14 +119,14 @@ public class GrapeClimateRequirementRecipe implements Recipe<net.minecraft.world
             final Ingredient grapeType = Ingredient.fromJson(JsonHelpers.get(json, "grape_type"));
             final float minTemperature = GsonHelper.getAsFloat(json, "min_temperature");
             final float maxTemperature = GsonHelper.getAsFloat(json, "max_temperature");
-            final float minRainfall = GsonHelper.getAsFloat(json, "min_rainfall");
-            final float maxRainfall = GsonHelper.getAsFloat(json, "max_rainfall");
+            final int minHumidity = GsonHelper.getAsInt(json, "min_humidity");
+            final int maxHumidity = GsonHelper.getAsInt(json, "max_humidity");
             final String seasonName = GsonHelper.getAsString(json, "season");
             final Season season = Season.valueOf(seasonName.toUpperCase());
 
             return new GrapeClimateRequirementRecipe(recipeId, grapeType, 
                     minTemperature, maxTemperature, 
-                    minRainfall, maxRainfall, season);
+                    minHumidity, maxHumidity, season);
         }
 
         @Nullable
@@ -147,14 +135,14 @@ public class GrapeClimateRequirementRecipe implements Recipe<net.minecraft.world
             final Ingredient grapeType = Ingredient.fromNetwork(buffer);
             final float minTemperature = buffer.readFloat();
             final float maxTemperature = buffer.readFloat();
-            final float minRainfall = buffer.readFloat();
-            final float maxRainfall = buffer.readFloat();
+            final int minHumidity = buffer.readInt();
+            final int maxHumidity = buffer.readInt();
             final String seasonName = buffer.readUtf();
             final Season season = Season.valueOf(seasonName);
 
             return new GrapeClimateRequirementRecipe(recipeId, grapeType, 
                     minTemperature, maxTemperature, 
-                    minRainfall, maxRainfall, season);
+                    minHumidity, maxHumidity, season);
         }
 
         @Override
@@ -162,8 +150,8 @@ public class GrapeClimateRequirementRecipe implements Recipe<net.minecraft.world
             recipe.grapeType.toNetwork(buffer);
             buffer.writeFloat(recipe.minTemperature);
             buffer.writeFloat(recipe.maxTemperature);
-            buffer.writeFloat(recipe.minRainfall);
-            buffer.writeFloat(recipe.maxRainfall);
+            buffer.writeInt(recipe.minHumidity);
+            buffer.writeInt(recipe.maxHumidity);
             buffer.writeUtf(recipe.season.name());
         }
     }
